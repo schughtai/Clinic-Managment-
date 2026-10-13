@@ -17,16 +17,25 @@ import { AuthService } from './modules/auth/auth.service';
 import { AppointmentsController } from './modules/appointments/appointments.controller';
 import { AppointmentsRepository } from './modules/appointments/appointments.repository';
 import { AppointmentsService } from './modules/appointments/appointments.service';
+import { BillingController } from './modules/billing/billing.controller';
+import { BillingService } from './modules/billing/billing.service';
 import { ClinicController } from './modules/clinic/clinic.controller';
 import { ClinicService } from './modules/clinic/clinic.service';
+import { DataController } from './modules/data/data.controller';
+import { ExportService } from './modules/data/export.service';
+import { ImportService } from './modules/data/import.service';
 import { DoctorsController } from './modules/doctors/doctors.controller';
 import { DoctorsService } from './modules/doctors/doctors.service';
+import { MessagingController } from './modules/messaging/messaging.controller';
+import { MessagingService } from './modules/messaging/messaging.service';
 import { PatientsController } from './modules/patients/patients.controller';
 import { PatientsRepository } from './modules/patients/patients.repository';
 import { PatientsService } from './modules/patients/patients.service';
 import { FILE_STORAGE, LocalFileStorage } from './modules/files/file-storage';
 import { PrescriptionsController } from './modules/prescriptions/prescriptions.controller';
 import { PrescriptionsService } from './modules/prescriptions/prescriptions.service';
+import { ReportsController } from './modules/reports/reports.controller';
+import { ReportsService } from './modules/reports/reports.service';
 import { UsersController } from './modules/users/users.controller';
 import { UsersService } from './modules/users/users.service';
 import { VisitAccess } from './modules/visits/visit-access';
@@ -55,6 +64,10 @@ export class AppModule {
         AppointmentsController,
         VisitsController,
         PrescriptionsController,
+        BillingController,
+        ReportsController,
+        MessagingController,
+        DataController,
       ],
       providers: [
         AuthService,
@@ -69,6 +82,11 @@ export class AppModule {
         VisitAccess,
         VisitsService,
         PrescriptionsService,
+        BillingService,
+        ReportsService,
+        MessagingService,
+        ImportService,
+        ExportService,
         AiService,
         {
           provide: AI_PROVIDER,

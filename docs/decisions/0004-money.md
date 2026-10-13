@@ -9,7 +9,8 @@ Status: accepted · 14 October 2026
 - Percentage discounts are converted to whole rupees by rounding half up, once, when the invoice line or invoice is saved.
 - An invoice total is the sum of its line amounts minus the discount, and is never below zero.
 - Payments cannot exceed the amount still due. Overpayment is rejected.
-- Invoice status is derived from totals: unpaid, partial or paid. A voided invoice keeps its payments for the record and is excluded from dues and daily totals.
+- Invoice status is derived from totals: unpaid, partial or paid. An invoice with no payments can be cancelled by the owner, with a reason, and is then excluded from dues and daily totals. An invoice that has taken money cannot be cancelled, because refunds are not part of the MVP.
+- Payments are recorded with an optional idempotency key. A repeated request with the same key returns the original payment instead of recording a second one. Concurrent payments are serialised by a row lock on the invoice.
 
 ## Why
 

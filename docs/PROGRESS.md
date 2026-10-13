@@ -16,7 +16,7 @@ Updated by the overnight build. Newest status at the top. A step is only marked 
 | 1 | Database layer, migrations, row-level security, auth, clinic setup, staff, doctors | done (tests pass: 12 database, 34 helper, 20 auth, 12 staff) |
 | 2 | Patients with Roman Urdu search, appointments, slots, walk-in tokens, queue | done (118 API tests pass in total) |
 | 3 | Visits, prescriptions, handwriting photos with AI reading, dictation clean-up | done on the API side (158 API tests pass); browser voice dictation comes with the web app in step 5 |
-| 4 | Billing, daily closing, reports, import, export, reminders, audit | not started |
+| 4 | Billing, daily closing, reports, import, export, WhatsApp click-to-send, audit view | done (206 API tests pass in total) |
 | 5 | Web app screens in Urdu and English | not started |
 | 6 | Browser smoke test, CI workflow, documentation, final report | not started |
 
