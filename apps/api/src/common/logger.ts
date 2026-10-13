@@ -19,7 +19,11 @@ export class NestPinoLogger implements LoggerService {
   constructor(private readonly logger: Logger) {}
 
   log(message: unknown, ...rest: unknown[]): void {
-    this.logger.info({ context: rest[0] }, String(message));
+    // Route mapping and module start-up lines are noise at normal levels.
+    const context = rest[0];
+    const quiet = context === 'RouterExplorer' || context === 'RoutesResolver' || context === 'InstanceLoader';
+    if (quiet) this.logger.debug({ context }, String(message));
+    else this.logger.info({ context }, String(message));
   }
   error(message: unknown, ...rest: unknown[]): void {
     this.logger.error({ context: rest.at(-1), trace: rest.length > 1 ? rest[0] : undefined }, String(message));

@@ -3,13 +3,13 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && node scripts/copy-sql.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "node dist/main.js",
-    "dev": "tsx watch src/dev.ts",
-    "db:dev": "tsx src/db/dev-server.ts",
+    "dev": "tsx src/dev.ts",
     "db:migrate": "tsx src/db/migrate-cli.ts",
+    "db:migrate:prod": "node dist/db/migrate-cli.js",
     "db:seed": "tsx src/db/seed-cli.ts",
     "test": "vitest run"
   },
