@@ -29,6 +29,17 @@ export function listMigrationFiles(directory: string): string[] {
     .sort();
 }
 
+/** Urdu names and notes need UTF-8. A legacy encoding would reject them at save time, so refuse to start. */
+export async function assertUtf8Database(client: Client): Promise<void> {
+  const result = await client.query<{ encoding: string }>(
+    'select pg_encoding_to_char(encoding) as encoding from pg_database where datname = current_database()',
+  );
+  const encoding = result.rows[0]?.encoding;
+  if (encoding !== 'UTF8') {
+    throw new Error(`The database encoding is ${encoding ?? 'unknown'} but must be UTF8. Create the database with ENCODING 'UTF8'.`);
+  }
+}
+
 async function ensureAppRole(client: Client, password: string): Promise<void> {
   const existing = await client.query('select 1 from pg_roles where rolname = $1', [APP_ROLE]);
   const template =
@@ -57,6 +68,7 @@ export async function migrate(options: MigrateOptions): Promise<string[]> {
   const applied: string[] = [];
   try {
     await client.query('select pg_advisory_lock($1)', [MIGRATION_LOCK_ID]);
+    await assertUtf8Database(client);
     await ensureAppRole(client, options.appPassword);
     await client.query(
       'create table if not exists schema_migrations (version text primary key, applied_at timestamptz not null default now())',

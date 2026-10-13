@@ -62,7 +62,7 @@ function latinSkeleton(word: string): string {
     previousWasVowel = false;
     result += letter;
   }
-  return result.replace(/(.)\1+/g, '$1');
+  return result;
 }
 
 export function nameWords(name: string): string[] {

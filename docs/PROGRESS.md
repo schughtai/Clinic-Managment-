@@ -14,7 +14,7 @@ Updated by the overnight build. Newest status at the top. A step is only marked 
 | --- | --- | --- |
 | 0 | Repo foundation, decision records, workspace config | done |
 | 1 | Database layer, migrations, row-level security, auth, clinic setup, staff, doctors | done (tests pass: 12 database, 34 helper, 20 auth, 12 staff) |
-| 2 | Patients with Roman Urdu search, doctors, schedules, appointments | not started |
+| 2 | Patients with Roman Urdu search, appointments, slots, walk-in tokens, queue | done (118 API tests pass in total) |
 | 3 | Visits, prescriptions, handwriting and voice features | not started |
 | 4 | Billing, daily closing, reports, import, export, reminders, audit | not started |
 | 5 | Web app screens in Urdu and English | not started |

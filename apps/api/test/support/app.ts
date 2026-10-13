@@ -36,7 +36,7 @@ export function testConfig(overrides: Partial<AppConfig> = {}): AppConfig {
     anthropicApiKey: undefined,
     aiModel: 'claude-opus-5',
     aiTimeoutMs: 5_000,
-    logLevel: 'silent',
+    logLevel: process.env.TEST_LOG_LEVEL ?? 'silent',
     trustProxy: 0,
     rateLimitPerMinute: 100_000,
     loginRatePerMinute: 100_000,

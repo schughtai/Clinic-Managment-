@@ -34,6 +34,8 @@ export async function startDevDatabase(options: DevDatabaseOptions): Promise<Dev
     user: ADMIN_USER,
     password: ADMIN_PASSWORD,
     persistent: !options.ephemeral,
+    // Windows would otherwise pick a legacy encoding that cannot store Urdu. UTF-8 is required.
+    initdbFlags: ['--encoding=UTF8', '--no-locale'],
     onLog: () => undefined,
     onError: () => undefined,
   });
