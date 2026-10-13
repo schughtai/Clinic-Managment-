@@ -1,6 +1,5 @@
 import { existsSync } from 'node:fs';
 import path from 'node:path';
-import EmbeddedPostgres from 'embedded-postgres';
 
 /**
  * A real PostgreSQL server for development and tests, started from an npm package.
@@ -27,6 +26,8 @@ export const DEV_APP_PASSWORD = 'dev-app-password';
 
 export async function startDevDatabase(options: DevDatabaseOptions): Promise<DevDatabase> {
   const database = options.database ?? 'clinic';
+  // The package is ESM-only, so it is loaded with a dynamic import from this CommonJS code.
+  const { default: EmbeddedPostgres } = await import('embedded-postgres');
   const server = new EmbeddedPostgres({
     databaseDir: options.dataDir,
     port: options.port,

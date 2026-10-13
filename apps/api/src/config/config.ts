@@ -27,6 +27,10 @@ const EnvSchema = z.object({
   ANTHROPIC_API_KEY: optionalString,
   AI_MODEL: z.string().default('claude-opus-5'),
   AI_TIMEOUT_MS: z.coerce.number().int().min(1000).max(120_000).default(45_000),
+  /** Number of reverse proxies in front of the API, so client IP addresses are read correctly. */
+  TRUST_PROXY: z.coerce.number().int().min(0).max(5).default(0),
+  RATE_LIMIT_PER_MINUTE: z.coerce.number().int().min(10).max(100_000).default(300),
+  LOGIN_RATE_PER_MINUTE: z.coerce.number().int().min(1).max(10_000).default(10),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).default('info'),
 });
 
@@ -46,6 +50,9 @@ export interface AppConfig {
   aiModel: string;
   aiTimeoutMs: number;
   logLevel: string;
+  trustProxy: number;
+  rateLimitPerMinute: number;
+  loginRatePerMinute: number;
 }
 
 export class ConfigError extends Error {}
@@ -93,5 +100,8 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     aiModel: value.AI_MODEL,
     aiTimeoutMs: value.AI_TIMEOUT_MS,
     logLevel: value.LOG_LEVEL,
+    trustProxy: value.TRUST_PROXY,
+    rateLimitPerMinute: value.RATE_LIMIT_PER_MINUTE,
+    loginRatePerMinute: value.LOGIN_RATE_PER_MINUTE,
   };
 }

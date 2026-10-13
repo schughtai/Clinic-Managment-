@@ -74,7 +74,8 @@ export function nameWords(name: string): string[] {
     .filter((word) => word.length > 0);
 }
 
-export function wordKey(word: string): string {
+export function wordKey(input: string): string {
+  const word = input.normalize('NFKD').toLowerCase();
   if (URDU_SCRIPT.test(word)) return normalizeUrduWord(word);
   const latin = word.replace(COMBINING_MARKS, '').replace(/[^a-z]/g, '');
   return latinSkeleton(latin);

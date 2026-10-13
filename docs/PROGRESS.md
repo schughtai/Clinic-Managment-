@@ -12,8 +12,8 @@ Updated by the overnight build. Newest status at the top. A step is only marked 
 
 | # | Step | Status |
 | --- | --- | --- |
-| 0 | Repo foundation, decision records, workspace config | in progress |
-| 1 | Database layer, migrations, row-level security, auth, clinic setup | not started |
+| 0 | Repo foundation, decision records, workspace config | done |
+| 1 | Database layer, migrations, row-level security, auth, clinic setup, staff, doctors | done (tests pass: 12 database, 34 helper, 20 auth, 12 staff) |
 | 2 | Patients with Roman Urdu search, doctors, schedules, appointments | not started |
 | 3 | Visits, prescriptions, handwriting and voice features | not started |
 | 4 | Billing, daily closing, reports, import, export, reminders, audit | not started |

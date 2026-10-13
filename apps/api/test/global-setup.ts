@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import net from 'node:net';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import type { GlobalSetupContext } from 'vitest/node';
+import type { GlobalSetupContext } from 'vitest/node' with { 'resolution-mode': 'import' };
 import { DEV_APP_PASSWORD, startDevDatabase } from '../src/db/dev-server';
 import { migrate } from '../src/db/migrate';
 
