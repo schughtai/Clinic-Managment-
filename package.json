@@ -3,14 +3,21 @@
   "private": true,
   "version": "0.1.0",
   "description": "Multi-tenant clinic management platform",
-  "workspaces": ["apps/api", "apps/web"],
-  "engines": { "node": ">=20.10" },
+  "workspaces": [
+    "apps/api",
+    "apps/web"
+  ],
+  "engines": {
+    "node": ">=20.10"
+  },
   "scripts": {
-    "dev": "npm run dev --workspace apps/api",
+    "dev": "node scripts/dev.mjs",
+    "dev:api": "npm run dev --workspace apps/api",
     "dev:web": "npm run dev --workspace apps/web",
     "build": "npm run build --workspaces",
     "test": "npm test --workspace apps/api",
     "lint": "npm run lint --workspaces --if-present",
-    "typecheck": "npm run typecheck --workspaces --if-present"
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "db:migrate": "npm run db:migrate:prod --workspace apps/api"
   }
 }

@@ -1,13 +1,6 @@
 # Build progress
 
-Updated by the overnight build. A step is marked done only after it was run and checked.
-
-## How to resume
-
-1. Read this file and run `git log --oneline` in `D:\clinic`.
-2. Backend tests: `cd apps/api && npx vitest run` (206 tests, about 35 seconds). Type check: `npx tsc -p tsconfig.json --noEmit`. Lint: `npx eslint "src/**/*.ts" "test/**/*.ts"`.
-3. Continue with the first web page that does not exist yet (list below).
-4. Write files with the editor tool, not shell heredocs. Shell heredocs fail on this machine when the text contains quotes.
+First working version is complete. A step is marked done only after it was run and checked.
 
 ## Steps
 
@@ -16,32 +9,39 @@ Updated by the overnight build. A step is marked done only after it was run and 
 | 0 | Repo foundation, decision records, workspace config | done |
 | 1 | Database layer, row-level security, auth, staff, doctors | done |
 | 2 | Patients with Roman Urdu search, appointments, slots, tokens, queue | done |
-| 3 | Visits, prescriptions, handwriting photos with AI reading, dictation clean-up (API) | done |
-| 4 | Billing, closing, reports, import, export, WhatsApp click-to-send, audit view | done, 206 API tests pass |
-| 4b | Development runner (`npm run dev` in `apps/api`) and demo data | done, checked by hand against the running server |
-| 5 | Web app (Vue 3 + Vite, decision 0006) | in progress, see below |
-| 6 | Browser smoke test, CI workflow, README, final report | not started |
+| 3 | Visits, prescriptions, handwriting photos with AI reading, dictation clean-up | done |
+| 4 | Billing, closing, reports, import, export, WhatsApp click-to-send, audit view | done |
+| 4b | Development runner and demo data (`npm run dev`) | done |
+| 5 | Web app, Vue 3 and Vite (decision 0006) | done |
+| 6 | Browser check, CI workflow, README, final report | done |
 
-## Web app (`apps/web`) status
+## What was verified, and how
 
-Done and written, not yet type-checked or run in a browser:
+| Check | Result |
+| --- | --- |
+| API tests on a real PostgreSQL (`npm test`) | 206 passed |
+| Type check, both apps (`npm run typecheck`) | clean |
+| Lint, API (`npm run lint`) | clean |
+| Production build, both apps (`npm run build`) | clean |
+| Compiled API started in production mode | ready, refuses a placeholder secret and a non-https origin, cookie is HttpOnly, Secure and SameSite |
+| Fresh start from an empty folder with `npm run dev` | API ready in 9 seconds, sign-in works through the web server |
+| Browser: sign-in, dashboard figures, search by other spellings (Roman Urdu and Urdu script), visit screen with voice buttons, handwriting upload, prescription print | worked |
+| `npm audit --omit=dev` | 0 findings |
+| `npm audit` (all) | 3 findings in Vitest 3, test tooling only |
 
-- `src/api.ts`, `types.ts`, `i18n.ts` (English text is the key, Urdu in `locale-ur.ts`), `session.ts`, `toast.ts`, `format.ts`, `image.ts`, `style.css`, `main.ts`, `router.ts`, `App.vue`
-- Components: `StatusPill`, `PatientPicker`, `DictationButton` (browser speech to text), `HandwritingInput` (photo or draw, then upload)
-- Pages: `LoginPage`, `DashboardPage`, `PatientsPage`, `PatientNewPage`
+## Not verified
 
-Still to write (the router already points at all of these):
+- AI reading of handwriting and note tidy-up against the live service. No API key was available. The code is tested with a stand-in provider only.
+- Actually speaking into the microphone. The buttons render and the browser support check works, but speech recognition needs a person and a microphone.
+- Pressing Print in a real print dialog, and WhatsApp links opening the WhatsApp app.
+- Urdu screens on a real right-to-left layout beyond the sign-in and print pages.
+- The web app on a phone-sized screen.
+- Load, backup and restore behaviour.
 
-- `PatientPage` (details, edit, visit timeline for owner and doctor, invoices for front desk, buttons to book, walk in, new visit, new invoice)
-- `VisitPage` (new and edit: fields with dictation, vitals, AI tidy-up, handwriting upload and transcription review, prescription editor with templates, print and WhatsApp)
-- `AppointmentsPage` (day list, book with slots, walk-in)
-- `BillingPage` (list and create invoice with live total), `InvoicePage` (pay with idempotency key, void, WhatsApp reminder)
-- `ReportsPage` (daily, close the day, doctor report), `RemindersPage`, `SettingsPage` (clinic, staff, doctors and schedules, import and export, audit, change password), `PrintPrescriptionPage`
+## Next steps
 
-Then: `cd apps/web && npx vue-tsc --noEmit`, `npx vite build`, start API and web, and check the main journeys in a browser.
-
-## Known facts to keep
-
-- Demo sign-in details are printed by the dev runner and listed in the README. They are synthetic.
-- Node on this machine is 20.10, so Vite 6 and Vitest 3 are used. The 3 remaining audit findings are in Vitest and affect developers only.
-- Nothing is pushed anywhere. There is no remote.
+1. Run `npm run dev`, sign in as each demo role and click through the main journeys.
+2. Add an API key, turn on AI in Settings as the owner, and try real handwritten notes, including Urdu.
+3. Have a native Urdu reader review `apps/web/src/locale-ur.ts`.
+4. Choose a host, set up automated database backups, and test a restore.
+5. Run the clinic validation plan in `docs/mvp-plan.md` before onboarding paying clinics.

@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { api } from '../api';
-import { dateOnly, genderLabel } from '../format';
+import { dateOnly, genderLabel, phoneText } from '../format';
 import { locale, setLocale, t } from '../i18n';
 import { notifyError } from '../toast';
 import type { PrescriptionPrint } from '../types';
@@ -35,7 +35,7 @@ onMounted(async () => {
     <article class="sheet">
       <header>
         <h1>{{ data.clinic.name }}</h1>
-        <div class="muted small">{{ place }}<span v-if="data.clinic.phone"> · {{ data.clinic.phone }}</span></div>
+        <div class="muted small">{{ place }}<span v-if="data.clinic.phone"> · {{ phoneText(data.clinic.phone) }}</span></div>
       </header>
       <hr />
       <div class="row" style="justify-content: space-between">
