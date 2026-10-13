@@ -4,6 +4,7 @@ import path from 'node:path';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import supertest from 'supertest';
 import { inject } from 'vitest';
+import type { AppOverrides } from '../../src/app.module';
 import { createApp } from '../../src/bootstrap';
 import type { AppConfig } from '../../src/config/config';
 
@@ -44,9 +45,12 @@ export function testConfig(overrides: Partial<AppConfig> = {}): AppConfig {
   };
 }
 
-export async function startTestApp(overrides: Partial<AppConfig> = {}): Promise<TestApp> {
+export async function startTestApp(
+  overrides: Partial<AppConfig> = {},
+  appOverrides: AppOverrides = {},
+): Promise<TestApp> {
   const config = testConfig(overrides);
-  const { app } = await createApp(config);
+  const { app } = await createApp(config, appOverrides);
   await app.init();
   return {
     app,

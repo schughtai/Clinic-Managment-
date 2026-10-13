@@ -3,7 +3,7 @@ import type { NestExpressApplication } from '@nestjs/platform-express';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import type { Logger } from 'pino';
-import { AppModule } from './app.module';
+import { AppModule, type AppOverrides } from './app.module';
 import { accessLogMiddleware, originCheckMiddleware, requestIdMiddleware } from './common/http-middleware';
 import { NestPinoLogger, createLogger } from './common/logger';
 import type { AppConfig } from './config/config';
@@ -14,9 +14,9 @@ export interface CreatedApp {
 }
 
 /** Builds the application with all security and logging settings. Tests and production use the same function. */
-export async function createApp(config: AppConfig): Promise<CreatedApp> {
+export async function createApp(config: AppConfig, overrides: AppOverrides = {}): Promise<CreatedApp> {
   const logger = createLogger(config.logLevel);
-  const app = await NestFactory.create<NestExpressApplication>(AppModule.register(config, logger), {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule.register(config, logger, overrides), {
     logger: new NestPinoLogger(logger),
   });
 

@@ -27,6 +27,11 @@ const CONSTRAINT_ERRORS: Readonly<Record<string, ClientError>> = {
     code: 'name_in_use',
     message: 'A template with this name already exists.',
   },
+  visits_appointment_unique: {
+    status: 409,
+    code: 'visit_exists',
+    message: 'A visit was already recorded for this appointment.',
+  },
   doctor_leaves_unique: { status: 409, code: 'already_exists', message: 'This day is already marked as leave.' },
   day_closings_unique: { status: 409, code: 'already_closed', message: 'This day has already been closed.' },
   payments_idempotency_unique: { status: 409, code: 'duplicate_request', message: 'This payment was already recorded.' },
