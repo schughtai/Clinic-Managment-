@@ -170,10 +170,10 @@ organization becomes Active, Receptionist only sees that facility.
 - [X] T060 [US3] Implement `apps/api/src/modules/organizations/settings.service.ts` + controller (`GET/PUT /orgs/:slug/settings`) and `setup-checks.ts` (profile name present; ≥ 1 active facility with address, effective timezone and ≥ 1 opening range; ≥ 1 active admin) and `POST /orgs/:slug/activate`
 - [X] T061 [US3] Implement `apps/api/src/modules/organizations/facilities.service.ts` + controller (`GET/POST /orgs/:slug/facilities`, `PUT /orgs/:slug/facilities/:id`) with zod schemas for opening hours
 - [X] T062 [US3] Implement `apps/api/src/modules/staff/staff.service.ts` + controller: `GET /orgs/:slug/staff`, `POST /orgs/:slug/invitations`, `PUT /orgs/:slug/staff/:membershipId`, `GET /orgs/:slug/roles` with escalation and module checks; audit each change
-- [ ] T063 [P] [US3] Web: `apps/web/src/pages/app/settings/OrganizationSettingsPage.tsx` (profile + locale; address uses `VoiceTextField`) and `FacilitiesPage.tsx` with `FacilityDrawer.tsx` and `OpeningHoursEditor.tsx`
-- [ ] T064 [P] [US3] Web: `apps/web/src/pages/app/settings/StaffPage.tsx` (members and pending invitations tables, masked identifiers) and `InviteStaffDialog.tsx` (roles, facility scope, one-time link with copy/WhatsApp), `RolesPage.tsx` (read-only permissions per role)
+- [X] T063 [P] [US3] Web: `apps/web/src/pages/app/settings/OrganizationSettingsPage.tsx` (profile + locale; address uses `VoiceTextField`) and `FacilitiesPage.tsx` with `FacilityDrawer.tsx` and `OpeningHoursEditor.tsx`
+- [X] T064 [P] [US3] Web: `apps/web/src/pages/app/settings/StaffPage.tsx` (members and pending invitations tables, masked identifiers) and `InviteStaffDialog.tsx` (roles, facility scope, one-time link with copy/WhatsApp), `RolesPage.tsx` (read-only permissions per role)
 - [X] T065 [US3] Extend `apps/api/test/isolation.test.ts` to every US3 route (settings, facilities, staff, invitations, roles, activate)
-- [ ] T066 [US3] Web: complete `DashboardPage.tsx` setup checklist with links and Activate button; show organization status badge
+- [X] T066 [US3] Web: complete `DashboardPage.tsx` setup checklist with links and Activate button; show organization status badge
 
 **Checkpoint**: P1 scope (US1–US3) complete: a real organization can be onboarded and staffed.
 
@@ -197,7 +197,7 @@ immediate effect, last-admin protection.
 - [X] T069 [US4] Implement in `apps/api/src/modules/staff/staff.service.ts` + controller: revoke/reissue invitation, deactivate/reactivate membership (with `session_revoke_person(person, reason, org)`), last-admin guard
 - [X] T070 [US4] Implement `apps/api/src/modules/staff/resets.service.ts` + controllers `POST /orgs/:slug/staff/:membershipId/reset-password`, `POST /platform/organizations/:id/admins/:membershipId/reset-password`, `POST /password-resets/complete`
 - [X] T071 [US4] Extend `apps/api/test/isolation.test.ts` to every US4 route (revoke, reissue, deactivate, reactivate, reset)
-- [ ] T072 [P] [US4] Web: staff row actions (change access drawer, deactivate/reactivate with `ConfirmDialog`, reset password dialog with one-time link) in `apps/web/src/pages/app/settings/StaffPage.tsx`; `apps/web/src/pages/auth/ResetPage.tsx` (token from fragment)
+- [X] T072 [P] [US4] Web: staff row actions (change access drawer, deactivate/reactivate with `ConfirmDialog`, reset password dialog with one-time link) in `apps/web/src/pages/app/settings/StaffPage.tsx`; `apps/web/src/pages/auth/ResetPage.tsx` (token from fragment)
 
 **Checkpoint**: Offboarding and resets satisfy SC-004.
 
@@ -216,7 +216,7 @@ immediate effect, last-admin protection.
 ### Implementation for User Story 5
 
 - [X] T074 [US5] Implement `apps/api/src/modules/platform/lifecycle.service.ts` + routes `POST /platform/organizations/:id/status`, `PUT /platform/organizations/:id/modules`
-- [ ] T075 [US5] Web: lifecycle actions with reason dialog, status history and module toggles on `apps/web/src/pages/platform/OrganizationDetailPage.tsx`; suspended-organization screen in `apps/web/src/shell/AppShell.tsx` that keeps unsaved form state in place
+- [X] T075 [US5] Web: lifecycle actions with reason dialog, status history and module toggles on `apps/web/src/pages/platform/OrganizationDetailPage.tsx`; suspended-organization screen in `apps/web/src/shell/AppShell.tsx` that keeps unsaved form state in place
 - [X] T076 [US5] Extend `apps/api/test/isolation.test.ts`: a tenant admin of any organization gets 403/404 on every `/platform/*` route, and a password-level Super Admin session gets `mfa_required`
 
 **Checkpoint**: SaaS operations for v2 §20.6 (initial subset) work.
@@ -237,7 +237,7 @@ immediate effect, last-admin protection.
 
 - [X] T078 [US6] Implement `apps/api/src/modules/audit/audit.controller.ts` (`GET /orgs/:slug/audit`) and `GET /platform/audit` in `apps/api/src/modules/platform/platform.controller.ts`
 - [X] T079 [US6] Extend `apps/api/test/isolation.test.ts` to both audit routes (cross-organization and non-platform access)
-- [ ] T080 [P] [US6] Web: `apps/web/src/pages/app/AuditPage.tsx` and `apps/web/src/pages/platform/PlatformAuditPage.tsx` (filter bar, table, readable action labels in en/ur, empty state)
+- [X] T080 [P] [US6] Web: `apps/web/src/pages/app/AuditPage.tsx` and `apps/web/src/pages/platform/PlatformAuditPage.tsx` (filter bar, table, readable action labels in en/ur, empty state)
 
 **Checkpoint**: All six stories complete.
 
@@ -245,7 +245,7 @@ immediate effect, last-admin protection.
 
 ## Phase 9: Polish & Cross-Cutting Concerns
 
-- [ ] T081 Rewrite `apps/api/src/db/seed.ts` demo data per research.md R14 (Super Admin with dev MFA secret, Shifa Health Clinic with two facilities and admin/receptionist(one facility)/finance, City Medical Centre with admin) and `apps/api/src/dev.ts` printing accounts and, when `DEV_PRINT_TOTP=true`, the current code
+- [X] T081 Rewrite `apps/api/src/db/seed.ts` demo data per research.md R14 (Super Admin with dev MFA secret, Shifa Health Clinic with two facilities and admin/receptionist(one facility)/finance, City Medical Centre with admin) and `apps/api/src/dev.ts` printing accounts and, when `DEV_PRINT_TOTP=true`, the current code
 - [ ] T082 [P] Complete Urdu strings in `apps/web/src/i18n/ur.ts` for every key; check RTL layout of shell, tables, dialogs
 - [ ] T083 [P] Accessibility pass: focus order, visible focus ring, labels, `aria-live` for form errors and toasts, contrast check of token pairs (WCAG 2.2 AA) documented in `apps/web/src/design/README.md`
 - [ ] T084 [P] Responsive pass at 375, 768, 1280 px for every page (no horizontal scroll; tables become stacked rows on phones)
