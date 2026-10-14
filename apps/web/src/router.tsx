@@ -4,6 +4,9 @@ import { homeFor, RequirePermission, SessionWatcher, useMe } from './auth/sessio
 import { Spinner } from './design/components';
 import { AccountPage } from './pages/account/AccountPage';
 import { OrgAuditPage, PlatformAuditPage } from './pages/app/AuditLog';
+import { NewPatientPage } from './pages/app/patients/NewPatientPage';
+import { PatientPage } from './pages/app/patients/PatientPage';
+import { PatientsPage } from './pages/app/patients/PatientsPage';
 import { DashboardPage } from './pages/app/DashboardPage';
 import { FacilitiesPage } from './pages/app/settings/FacilitiesPage';
 import { OrganizationSettingsPage } from './pages/app/settings/OrganizationSettingsPage';
@@ -62,6 +65,9 @@ export const router = createBrowserRouter([
           { path: 'settings/facilities', element: guarded('facility.manage', <FacilitiesPage />) },
           { path: 'settings/staff', element: guarded('staff.read', <StaffPage />) },
           { path: 'settings/roles', element: guarded('role.read', <RolesPage />) },
+          { path: 'patients', element: guarded('patients.read', <PatientsPage />) },
+          { path: 'patients/new', element: guarded('patients.create', <NewPatientPage />) },
+          { path: 'patients/:id', element: guarded('patients.read', <PatientPage />) },
           { path: 'audit', element: guarded('audit.read', <OrgAuditPage />) },
         ],
       },

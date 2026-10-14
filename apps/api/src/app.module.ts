@@ -27,6 +27,9 @@ import { OrganizationsService } from './modules/platform/organizations.service';
 import { PlatformController } from './modules/platform/platform.controller';
 import { InvitationsController } from './modules/staff/invitations.controller';
 import { InvitationsService } from './modules/staff/invitations.service';
+import { PatientsController } from './modules/patients/patients.controller';
+import { PatientsService } from './modules/patients/patients.service';
+import { HistoryService } from './modules/patients/history.service';
 
 @Module({})
 export class AppModule {
@@ -34,7 +37,7 @@ export class AppModule {
     return {
       module: AppModule,
       imports: [CoreModule.register(config, logger), ThrottlerModule.forRoot(throttlerOptions(config))],
-      controllers: [HealthController, AuthController, InvitationsController, PlatformController, DashboardController, SettingsController, StaffController, ResetsController, AuditController, ScheduleController, AppointmentsController],
+      controllers: [HealthController, AuthController, InvitationsController, PlatformController, DashboardController, SettingsController, StaffController, ResetsController, AuditController, ScheduleController, AppointmentsController, PatientsController],
       providers: [
         AuthService,
         InvitationsService,
@@ -43,6 +46,8 @@ export class AppModule {
         ScheduleService,
         AppointmentsService,
         QueueService,
+        PatientsService,
+        HistoryService,
         SettingsService,
         StaffService,
         // Order matters: the rate limit runs first, then the session and permission check.
