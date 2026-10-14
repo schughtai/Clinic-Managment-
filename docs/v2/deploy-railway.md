@@ -24,7 +24,7 @@ first: migrations are idempotent and take an advisory lock, so a restart simply 
 |---|---|
 | `NODE_ENV` | `production` |
 | `ADMIN_DATABASE_URL` | `${{Postgres.DATABASE_URL}}` — Railway's superuser. **Only migrations and operator commands use it.** |
-| `DATABASE_URL` | `postgresql://clinic_app:<APP_DB_PASSWORD>@${{Postgres.PGHOST}}:${{Postgres.PGPORT}}/${{Postgres.PGDATABASE}}` |
+| `DATABASE_URL` | `postgresql://clinic_app:${{Postgres.POSTGRES_PASSWORD}}@${{Postgres.PGHOST}}:${{Postgres.PGPORT}}/${{Postgres.PGDATABASE}}` |
 | `MFA_ENCRYPTION_KEY` | 64 hex characters: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
 | `ALLOWED_ORIGINS` | `https://<your-service>.up.railway.app` (the public domain Railway generates) |
 | `COOKIE_SECURE` | `true` |
@@ -32,8 +32,10 @@ first: migrations are idempotent and take an advisory lock, so a restart simply 
 | `WEB_DIST_DIR` | `../web/dist` |
 | `LOG_LEVEL` | `info` |
 
-`<APP_DB_PASSWORD>` is a long random value you choose. The migration command creates the
-`clinic_app` role with exactly this password, taken from `DATABASE_URL`.
+The `clinic_app` password reuses the random password Railway generated for Postgres, so nobody has
+to handle a database secret. This adds no exposure: the service already holds the administrator URL
+for migrations. The migration command creates `clinic_app` with the password in `DATABASE_URL`. To
+use a separate password instead, add a variable with your own value and reference it here.
 
 **Why two URLs:** Railway's `DATABASE_URL` connects as a superuser, and superusers skip row-level
 security. The API checks its role at start-up and refuses to run as a superuser or with BYPASSRLS
