@@ -14,7 +14,43 @@ export const PERMISSIONS = [
   'staff.reset_password',
   'role.read',
   'audit.read',
+  // Feature 002: administrative clinic workflows
+  'patients.read',
+  'patients.create',
+  'patients.update',
+  'patients.merge',
+  'history.read_summary',
+  'history.write',
+  'history.review',
+  'documents.read',
+  'documents.upload',
+  'consent.manage',
+  'schedule.read',
+  'schedule.manage',
+  'appointments.read',
+  'appointments.manage',
+  'queue.manage',
+  'services.manage',
+  'invoices.read',
+  'invoices.manage',
+  'payments.record',
+  'refunds.request',
+  'refunds.approve',
+  'discounts.approve',
+  'billing.close_day',
+  'billing.reopen_day',
+  'reports.read',
+  'reports.export',
+  'reminders.send',
+  'data.import',
+  'data.export',
+  // Feature 1B: clinical content (needs the clinical module and one of these permissions)
+  'clinical.write',
+  'clinical.read',
 ] as const;
+
+/** Permissions that open clinical content; the clinical gate requires one of them. */
+export const CLINICAL_PERMISSIONS: readonly PermissionCode[] = ['clinical.write', 'clinical.read'];
 
 export type PermissionCode = (typeof PERMISSIONS)[number];
 
