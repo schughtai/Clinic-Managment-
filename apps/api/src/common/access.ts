@@ -1,11 +1,31 @@
 import { SetMetadata } from '@nestjs/common';
-import type { Role } from './request-context';
+import type { PermissionCode } from '../modules/identity/permissions';
 
-export const IS_PUBLIC = 'isPublic';
-export const ALLOWED_ROLES = 'allowedRoles';
+export const ACCESS = 'access';
 
-/** Marks a route that needs no sign-in. Everything else is private by default. */
-export const Public = (): MethodDecorator & ClassDecorator => SetMetadata(IS_PUBLIC, true);
+/**
+ * How a route is protected. Every route must declare exactly one; the access guard refuses a
+ * route without a declaration rather than letting everyone in.
+ */
+export type AccessRule =
+  | { kind: 'public' }
+  /** Any signed-in person, with or without an organization context. */
+  | { kind: 'session'; allowPasswordLevel: boolean }
+  /** A Super Admin whose session passed the authenticator check. */
+  | { kind: 'platform' }
+  /** A member of the organization named by the `:slug` route parameter, holding this permission. */
+  | { kind: 'permission'; code: PermissionCode };
 
-/** Lists the roles allowed on a route. A private route without this decorator is refused. */
-export const Roles = (...roles: Role[]): MethodDecorator & ClassDecorator => SetMetadata(ALLOWED_ROLES, roles);
+export const Public = (): MethodDecorator & ClassDecorator => SetMetadata(ACCESS, { kind: 'public' } satisfies AccessRule);
+
+/**
+ * Any signed-in person. By default the session must have completed every sign-in step; routes that
+ * are part of the authenticator step itself pass `allowPasswordLevel`.
+ */
+export const SessionOnly = (options: { allowPasswordLevel?: boolean } = {}): MethodDecorator & ClassDecorator =>
+  SetMetadata(ACCESS, { kind: 'session', allowPasswordLevel: options.allowPasswordLevel ?? false } satisfies AccessRule);
+
+export const Platform = (): MethodDecorator & ClassDecorator => SetMetadata(ACCESS, { kind: 'platform' } satisfies AccessRule);
+
+export const Permission = (code: PermissionCode): MethodDecorator & ClassDecorator =>
+  SetMetadata(ACCESS, { kind: 'permission', code } satisfies AccessRule);

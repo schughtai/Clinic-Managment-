@@ -1,8 +1,8 @@
 {
   "name": "clinic",
   "private": true,
-  "version": "0.1.0",
-  "description": "Multi-tenant clinic management platform",
+  "version": "0.2.0",
+  "description": "Multi-tenant clinic management platform, hospital-ready (v2)",
   "workspaces": [
     "apps/api",
     "apps/web"
@@ -15,9 +15,12 @@
     "dev:api": "npm run dev --workspace apps/api",
     "dev:web": "npm run dev --workspace apps/web",
     "build": "npm run build --workspaces",
-    "test": "npm test --workspace apps/api",
+    "start": "npm run start --workspace apps/api",
+    "test": "npm test --workspaces",
     "lint": "npm run lint --workspaces --if-present",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "db:migrate": "npm run db:migrate:prod --workspace apps/api"
+    "db:migrate": "npm run db:migrate:prod --workspace apps/api",
+    "platform:create-admin": "npm run platform:create-admin --workspace apps/api --",
+    "platform:reset-mfa": "npm run platform:reset-mfa --workspace apps/api --"
   }
 }

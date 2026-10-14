@@ -1,32 +1,49 @@
 import { createParamDecorator, type ExecutionContext } from '@nestjs/common';
 import type { Request } from 'express';
+import type { ModuleCode, PermissionCode } from '../modules/identity/permissions';
 import { unauthorized } from './errors';
 
-export const ROLES = ['owner', 'doctor', 'receptionist'] as const;
-export type Role = (typeof ROLES)[number];
+export type AuthLevel = 'password' | 'mfa';
 
-export interface AuthUser {
+export interface OrgContext {
   id: string;
-  clinicId: string;
+  slug: string;
   name: string;
-  role: Role;
+  status: string;
+  modules: readonly ModuleCode[];
+  membershipId: string;
+  /** Every facility of the organization, or only these ids. */
+  facilityIds: readonly string[] | '*';
+  permissions: ReadonlySet<PermissionCode>;
+}
+
+/** Everything the server knows about the caller. Built by the access guard on every request. */
+export interface ReqCtx {
+  person: { id: string; displayName: string };
+  sessionId: string;
+  authLevel: AuthLevel;
+  isPlatformAdmin: boolean;
+  /** Present on `/orgs/:slug/...` routes only. */
+  org: OrgContext | undefined;
+  requestId: string | undefined;
 }
 
 declare module 'express-serve-static-core' {
   interface Request {
-    user?: AuthUser;
+    ctx?: ReqCtx;
     requestId?: string;
   }
 }
 
-export interface ReqCtx {
-  user: AuthUser;
-  requestId: string | undefined;
-}
-
-/** The signed-in user and request id. The access guard has already checked the session and the role. */
+/** The caller's context. The access guard has already checked the session and the permission. */
 export const Ctx = createParamDecorator((_data: unknown, context: ExecutionContext): ReqCtx => {
   const request = context.switchToHttp().getRequest<Request>();
-  if (request.user === undefined) throw unauthorized();
-  return { user: request.user, requestId: request.requestId };
+  if (request.ctx === undefined) throw unauthorized();
+  return request.ctx;
 });
+
+/** The organization context of an organization route. */
+export function orgOf(ctx: ReqCtx): OrgContext {
+  if (ctx.org === undefined) throw unauthorized();
+  return ctx.org;
+}

@@ -7,26 +7,25 @@ const optionalString = z
   .optional()
   .transform((value) => (value === undefined || value.trim() === '' ? undefined : value.trim()));
 
+/** Used only outside production so `npm run dev` and tests need no setup. Never valid in production. */
+export const DEV_MFA_KEY = '00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff';
+
 const EnvSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().int().min(1).max(65535).default(3001),
   /** Connection string for the restricted application role. Row-level security applies to it. */
   DATABASE_URL: z.string().min(1, 'DATABASE_URL is required'),
-  /** Connection string for migrations. Only the migration command needs it. */
+  /** Connection string for migrations and operator commands. The running API never uses it. */
   ADMIN_DATABASE_URL: optionalString,
-  SESSION_SECRET: z.string().min(32, 'SESSION_SECRET must be at least 32 characters'),
   SESSION_HOURS: z.coerce.number().int().min(1).max(72).default(12),
-  /** Comma-separated list of web origins allowed to call the API with cookies. */
+  /** 32 bytes as 64 hex characters. Encrypts authenticator secrets at rest. */
+  MFA_ENCRYPTION_KEY: optionalString,
+  /** Comma-separated list of web origins allowed to call the API with cookies. The first one is used in links. */
   ALLOWED_ORIGINS: z.string().default('http://localhost:3000'),
   /** Set to true when the API is served over HTTPS. Forced on in production. */
   COOKIE_SECURE: z.enum(['true', 'false']).default('false'),
-  /** Shared invite code that allows creating a new clinic. Signup is disabled when unset. */
-  SIGNUP_CODE: optionalString,
-  UPLOAD_DIR: z.string().default('./data/uploads'),
-  UPLOAD_MAX_BYTES: z.coerce.number().int().min(1024).max(5_000_000).default(5_000_000),
-  ANTHROPIC_API_KEY: optionalString,
-  AI_MODEL: z.string().default('claude-opus-5'),
-  AI_TIMEOUT_MS: z.coerce.number().int().min(1000).max(120_000).default(45_000),
+  /** Folder with the built web app. When set, the API also serves the web app on the same origin. */
+  WEB_DIST_DIR: optionalString,
   /** Number of reverse proxies in front of the API, so client IP addresses are read correctly. */
   TRUST_PROXY: z.coerce.number().int().min(0).max(5).default(0),
   RATE_LIMIT_PER_MINUTE: z.coerce.number().int().min(10).max(100_000).default(300),
@@ -39,16 +38,13 @@ export interface AppConfig {
   port: number;
   databaseUrl: string;
   adminDatabaseUrl: string | undefined;
-  sessionSecret: string;
   sessionHours: number;
+  mfaKey: Buffer;
   allowedOrigins: readonly string[];
+  /** Origin used to build invitation and reset links. */
+  publicOrigin: string;
   cookieSecure: boolean;
-  signupCode: string | undefined;
-  uploadDir: string;
-  uploadMaxBytes: number;
-  anthropicApiKey: string | undefined;
-  aiModel: string;
-  aiTimeoutMs: number;
+  webDistDir: string | undefined;
   logLevel: string;
   trustProxy: number;
   rateLimitPerMinute: number;
@@ -67,21 +63,26 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
   const value = parsed.data;
   const isProduction = value.NODE_ENV === 'production';
 
-  if (isProduction && /dev|change|secret|password/i.test(value.SESSION_SECRET)) {
-    throw new ConfigError('SESSION_SECRET looks like a placeholder. Generate a random value for production.');
+  const mfaKeyHex = value.MFA_ENCRYPTION_KEY ?? (isProduction ? undefined : DEV_MFA_KEY);
+  if (mfaKeyHex === undefined) {
+    throw new ConfigError('MFA_ENCRYPTION_KEY is required in production (64 hex characters).');
+  }
+  if (!/^[0-9a-fA-F]{64}$/.test(mfaKeyHex)) {
+    throw new ConfigError('MFA_ENCRYPTION_KEY must be 64 hex characters (32 bytes).');
+  }
+  if (isProduction && mfaKeyHex.toLowerCase() === DEV_MFA_KEY) {
+    throw new ConfigError('MFA_ENCRYPTION_KEY is the development value. Generate a random key for production.');
   }
 
   const allowedOrigins = value.ALLOWED_ORIGINS.split(',')
     .map((origin) => origin.trim())
     .filter((origin) => origin.length > 0);
-  if (allowedOrigins.length === 0) {
+  const publicOrigin = allowedOrigins[0];
+  if (publicOrigin === undefined) {
     throw new ConfigError('ALLOWED_ORIGINS must list at least one origin.');
   }
   if (isProduction && allowedOrigins.some((origin) => !origin.startsWith('https://'))) {
     throw new ConfigError('ALLOWED_ORIGINS must use https in production.');
-  }
-  if (value.SIGNUP_CODE !== undefined && value.SIGNUP_CODE.length < 8) {
-    throw new ConfigError('SIGNUP_CODE must be at least 8 characters when set.');
   }
 
   return {
@@ -89,16 +90,12 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     port: value.PORT,
     databaseUrl: value.DATABASE_URL,
     adminDatabaseUrl: value.ADMIN_DATABASE_URL,
-    sessionSecret: value.SESSION_SECRET,
     sessionHours: value.SESSION_HOURS,
+    mfaKey: Buffer.from(mfaKeyHex, 'hex'),
     allowedOrigins,
+    publicOrigin,
     cookieSecure: isProduction || value.COOKIE_SECURE === 'true',
-    signupCode: value.SIGNUP_CODE,
-    uploadDir: value.UPLOAD_DIR,
-    uploadMaxBytes: value.UPLOAD_MAX_BYTES,
-    anthropicApiKey: value.ANTHROPIC_API_KEY,
-    aiModel: value.AI_MODEL,
-    aiTimeoutMs: value.AI_TIMEOUT_MS,
+    webDistDir: value.WEB_DIST_DIR,
     logLevel: value.LOG_LEVEL,
     trustProxy: value.TRUST_PROXY,
     rateLimitPerMinute: value.RATE_LIMIT_PER_MINUTE,

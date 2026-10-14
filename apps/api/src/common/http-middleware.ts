@@ -27,7 +27,7 @@ export function accessLogMiddleware(logger: Logger) {
           path: request.path,
           status: response.statusCode,
           ms: Math.round(milliseconds),
-          userId: request.user?.id,
+          personId: request.ctx?.person.id,
         },
         'request',
       );
