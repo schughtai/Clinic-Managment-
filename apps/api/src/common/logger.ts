@@ -6,7 +6,18 @@ export function createLogger(level: string): Logger {
   return pino({
     level,
     redact: {
-      paths: ['req.headers.cookie', 'req.headers.authorization', 'password', '*.password', 'token', '*.token'],
+      // PostgreSQL error detail and parameters can quote row values (a phone number, a name).
+      paths: [
+        'req.headers.cookie',
+        'req.headers.authorization',
+        'password',
+        '*.password',
+        'token',
+        '*.token',
+        'err.detail',
+        'err.where',
+        'err.parameters',
+      ],
       censor: '[redacted]',
     },
     base: { service: 'clinic-api' },

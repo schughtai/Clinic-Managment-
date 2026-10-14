@@ -10,8 +10,9 @@
   --surface-muted: #f1f5f9;
   --text: #17212f;
   --text-2: #64748b;
+  --text-3: #475569; /* small bold labels on muted surfaces */
   --border: #e2e8f0;
-  --border-strong: #cbd5e1;
+  --border-strong: #7f8ca0; /* form control edges: 3:1 or more on every surface */
   --accent: #0f766e;
   --accent-hover: #115e59;
   --accent-soft: #ccfbf1;

@@ -247,9 +247,9 @@ immediate effect, last-admin protection.
 
 - [X] T081 Rewrite `apps/api/src/db/seed.ts` demo data per research.md R14 (Super Admin with dev MFA secret, Shifa Health Clinic with two facilities and admin/receptionist(one facility)/finance, City Medical Centre with admin) and `apps/api/src/dev.ts` printing accounts and, when `DEV_PRINT_TOTP=true`, the current code
 - [X] T082 [P] Complete Urdu strings in `apps/web/src/i18n/ur.ts` for every key; check RTL layout of shell, tables, dialogs
-- [ ] T083 [P] Accessibility pass: focus order, visible focus ring, labels, `aria-live` for form errors and toasts, contrast check of token pairs (WCAG 2.2 AA) documented in `apps/web/src/design/README.md`
-- [ ] T084 [P] Responsive pass at 375, 768, 1280 px for every page (no horizontal scroll; tables become stacked rows on phones)
-- [ ] T085 Security review of the diff: no tokens in URLs/logs, cookie flags, rate limits on public routes, `security definer` functions have fixed `search_path` and minimal grants; record results in `specs/001-platform-tenant-foundation/checklists/security.md`
+- [X] T083 [P] Accessibility pass: focus order, visible focus ring, labels, `aria-live` for form errors and toasts, contrast check of token pairs (WCAG 2.2 AA) documented in `apps/web/src/design/README.md`
+- [X] T084 [P] Responsive pass at 375, 768, 1280 px for every page (no horizontal scroll; tables become stacked rows on phones)
+- [X] T085 Security review of the diff: no tokens in URLs/logs, cookie flags, rate limits on public routes, `security definer` functions have fixed `search_path` and minimal grants; record results in `specs/001-platform-tenant-foundation/checklists/security.md`
 - [X] T086 [P] Update `README.md` (v2 overview, roles, quick start, bootstrap command, demo accounts, limitations) and `docs/v2/PROGRESS.md`
 - [ ] T087 Run all gates (`npm run typecheck`, `npm run lint`, `npm test`, `npm run build`) and walk through quickstart.md scenarios 1–8 in the browser, recording results and measured task times for SC-001/SC-002 in `docs/v2/PROGRESS.md`
 
