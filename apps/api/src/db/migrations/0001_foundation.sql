@@ -459,8 +459,9 @@ create function session_revoke(p_hash bytea, p_reason text) returns void
   language sql security definer set search_path = pg_catalog, public
   as $$ update sessions set revoked_at = now(), revoke_reason = p_reason where token_hash = p_hash and revoked_at is null $$;
 
--- Ends a person's sessions. Allowed for oneself, the platform, or an organization the person belongs to.
-create function session_revoke_person(p_person uuid, p_reason text, p_keep_session uuid) returns integer
+-- Ends a person's sessions, or only those whose context is p_org. Allowed for oneself, the platform,
+-- or an organization the person belongs to.
+create function session_revoke_person(p_person uuid, p_reason text, p_keep_session uuid, p_org uuid default null) returns integer
   language plpgsql security definer set search_path = pg_catalog, public
   as $$
   declare
@@ -471,7 +472,8 @@ create function session_revoke_person(p_person uuid, p_reason text, p_keep_sessi
       raise exception 'not allowed' using errcode = '42501';
     end if;
     update sessions set revoked_at = now(), revoke_reason = p_reason
-      where person_id = p_person and revoked_at is null and (p_keep_session is null or id <> p_keep_session);
+      where person_id = p_person and revoked_at is null and (p_keep_session is null or id <> p_keep_session)
+        and (p_org is null or organization_id = p_org);
     get diagnostics affected = row_count;
     return affected;
   end

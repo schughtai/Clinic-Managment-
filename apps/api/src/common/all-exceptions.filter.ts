@@ -13,28 +13,12 @@ interface ClientError {
 
 /** Friendly messages for database rules that can be hit by normal use. */
 const CONSTRAINT_ERRORS: Readonly<Record<string, ClientError>> = {
-  users_phone_unique: { status: 409, code: 'phone_in_use', message: 'This phone number is already registered.' },
-  appointments_no_overlap: {
-    status: 409,
-    code: 'slot_taken',
-    message: 'That time is no longer available for this doctor.',
-  },
-  appointments_token_unique: { status: 409, code: 'conflict', message: 'Please try again.' },
-  patients_no_unique: { status: 409, code: 'conflict', message: 'Please try again.' },
-  invoices_no_unique: { status: 409, code: 'conflict', message: 'Please try again.' },
-  prescription_templates_name_unique: {
-    status: 409,
-    code: 'name_in_use',
-    message: 'A template with this name already exists.',
-  },
-  visits_appointment_unique: {
-    status: 409,
-    code: 'visit_exists',
-    message: 'A visit was already recorded for this appointment.',
-  },
-  doctor_leaves_unique: { status: 409, code: 'already_exists', message: 'This day is already marked as leave.' },
-  day_closings_unique: { status: 409, code: 'already_closed', message: 'This day has already been closed.' },
-  payments_idempotency_unique: { status: 409, code: 'duplicate_request', message: 'This payment was already recorded.' },
+  organizations_slug_unique: { status: 409, code: 'slug_taken', message: 'This web address is already used by another organization.' },
+  facilities_name_unique: { status: 409, code: 'name_in_use', message: 'Another branch already has this name.' },
+  persons_phone_unique: { status: 409, code: 'phone_in_use', message: 'This phone number already belongs to an account.' },
+  persons_email_unique: { status: 409, code: 'email_in_use', message: 'This email already belongs to an account.' },
+  organizations_status_transition: { status: 409, code: 'invalid_transition', message: 'The organization cannot move to that status.' },
+  organizations_status_reason: { status: 400, code: 'reason_required', message: 'Give a reason for this change.' },
 };
 
 interface PgLikeError {

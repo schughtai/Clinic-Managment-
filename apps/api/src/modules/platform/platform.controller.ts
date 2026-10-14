@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Inject, Param, Post, Put, Query } from '@nestjs/common';
 import { z } from 'zod';
 import { Platform } from '../../common/access';
 import { badRequest } from '../../common/errors';
@@ -6,6 +6,7 @@ import { Ctx, type ReqCtx } from '../../common/request-context';
 import { phoneSchema } from '../../common/schemas';
 import { parse, parseId } from '../../common/validate';
 import { currencySchema, dateFormatSchema, emailSchema, languageSchema, timezoneSchema } from '../identity/identity-helpers';
+import { LifecycleService } from './lifecycle.service';
 import { OrganizationsService } from './organizations.service';
 
 const optionalTrimmed = (max: number) =>
@@ -50,10 +51,39 @@ export const inviteeSchema = z
   })
   .refine((value) => value.phone !== undefined || value.email !== undefined, { message: 'Enter a phone number or an email.', path: ['phone'] });
 
+const statusSchema = z.object({
+  action: z.enum(['suspend', 'reactivate', 'deactivate', 'activate']),
+  reason: z.string().trim().max(500).optional(),
+});
+
+const modulesSchema = z.object({ modules: z.array(z.string().max(40)).max(10) });
+
 @Platform()
 @Controller('platform')
 export class PlatformController {
-  constructor(@Inject(OrganizationsService) private readonly organizations: OrganizationsService) {}
+  constructor(
+    @Inject(OrganizationsService) private readonly organizations: OrganizationsService,
+    @Inject(LifecycleService) private readonly lifecycle: LifecycleService,
+  ) {}
+
+  @Post('organizations/:id/status')
+  @HttpCode(200)
+  async status(@Ctx() ctx: ReqCtx, @Param('id') id: string, @Body() body: unknown) {
+    const input = parse(statusSchema, body);
+    await this.lifecycle.changeStatus(ctx, parseId(id), input.action, input.reason ?? null);
+    return this.organizations.detail(ctx, parseId(id));
+  }
+
+  @Put('organizations/:id/modules')
+  async modules(@Ctx() ctx: ReqCtx, @Param('id') id: string, @Body() body: unknown) {
+    return { modules: await this.lifecycle.setModules(ctx, parseId(id), parse(modulesSchema, body).modules) };
+  }
+
+  @Post('organizations/:id/admins/:membershipId/reset-password')
+  @HttpCode(200)
+  resetAdmin(@Ctx() ctx: ReqCtx, @Param('id') id: string, @Param('membershipId') membershipId: string) {
+    return this.lifecycle.resetAdminPassword(ctx, parseId(id), parseId(membershipId));
+  }
 
   @Get('organizations')
   list(@Ctx() ctx: ReqCtx, @Query() query: unknown) {

@@ -162,17 +162,17 @@ organization becomes Active, Receptionist only sees that facility.
 
 ### Tests for User Story 3
 
-- [ ] T058 [P] [US3] `apps/api/test/organizations.test.ts`: settings update validates currency (ISO 4217 list), language, IANA timezone, date format; facility CRUD validates opening hours (`day 0-6`, `HH:MM`, closes > opens, no overlaps) and keeps ≥ 1 active facility; dashboard setup checks report missing items; `POST /activate` → `setup_incomplete` with failing keys, then `active` with audit entry
-- [ ] T059 [P] [US3] `apps/api/test/staff.test.ts`: invite with roles and `selected` facilities; accepted member's facility scope enforced; assigning a role with a permission the caller lacks → `permission_escalation`; assigning `practitioner` while clinical module off → `module_disabled`
+- [X] T058 [P] [US3] `apps/api/test/organizations.test.ts`: settings update validates currency (ISO 4217 list), language, IANA timezone, date format; facility CRUD validates opening hours (`day 0-6`, `HH:MM`, closes > opens, no overlaps) and keeps ≥ 1 active facility; dashboard setup checks report missing items; `POST /activate` → `setup_incomplete` with failing keys, then `active` with audit entry
+- [X] T059 [P] [US3] `apps/api/test/staff.test.ts`: invite with roles and `selected` facilities; accepted member's facility scope enforced; assigning a role with a permission the caller lacks → `permission_escalation`; assigning `practitioner` while clinical module off → `module_disabled`
 
 ### Implementation for User Story 3
 
-- [ ] T060 [US3] Implement `apps/api/src/modules/organizations/settings.service.ts` + controller (`GET/PUT /orgs/:slug/settings`) and `setup-checks.ts` (profile name present; ≥ 1 active facility with address, effective timezone and ≥ 1 opening range; ≥ 1 active admin) and `POST /orgs/:slug/activate`
-- [ ] T061 [US3] Implement `apps/api/src/modules/organizations/facilities.service.ts` + controller (`GET/POST /orgs/:slug/facilities`, `PUT /orgs/:slug/facilities/:id`) with zod schemas for opening hours
-- [ ] T062 [US3] Implement `apps/api/src/modules/staff/staff.service.ts` + controller: `GET /orgs/:slug/staff`, `POST /orgs/:slug/invitations`, `PUT /orgs/:slug/staff/:membershipId`, `GET /orgs/:slug/roles` with escalation and module checks; audit each change
+- [X] T060 [US3] Implement `apps/api/src/modules/organizations/settings.service.ts` + controller (`GET/PUT /orgs/:slug/settings`) and `setup-checks.ts` (profile name present; ≥ 1 active facility with address, effective timezone and ≥ 1 opening range; ≥ 1 active admin) and `POST /orgs/:slug/activate`
+- [X] T061 [US3] Implement `apps/api/src/modules/organizations/facilities.service.ts` + controller (`GET/POST /orgs/:slug/facilities`, `PUT /orgs/:slug/facilities/:id`) with zod schemas for opening hours
+- [X] T062 [US3] Implement `apps/api/src/modules/staff/staff.service.ts` + controller: `GET /orgs/:slug/staff`, `POST /orgs/:slug/invitations`, `PUT /orgs/:slug/staff/:membershipId`, `GET /orgs/:slug/roles` with escalation and module checks; audit each change
 - [ ] T063 [P] [US3] Web: `apps/web/src/pages/app/settings/OrganizationSettingsPage.tsx` (profile + locale; address uses `VoiceTextField`) and `FacilitiesPage.tsx` with `FacilityDrawer.tsx` and `OpeningHoursEditor.tsx`
 - [ ] T064 [P] [US3] Web: `apps/web/src/pages/app/settings/StaffPage.tsx` (members and pending invitations tables, masked identifiers) and `InviteStaffDialog.tsx` (roles, facility scope, one-time link with copy/WhatsApp), `RolesPage.tsx` (read-only permissions per role)
-- [ ] T065 [US3] Extend `apps/api/test/isolation.test.ts` to every US3 route (settings, facilities, staff, invitations, roles, activate)
+- [X] T065 [US3] Extend `apps/api/test/isolation.test.ts` to every US3 route (settings, facilities, staff, invitations, roles, activate)
 - [ ] T066 [US3] Web: complete `DashboardPage.tsx` setup checklist with links and Activate button; show organization status badge
 
 **Checkpoint**: P1 scope (US1–US3) complete: a real organization can be onboarded and staffed.
@@ -189,14 +189,14 @@ immediate effect, last-admin protection.
 
 ### Tests for User Story 4
 
-- [ ] T067 [P] [US4] Extend `apps/api/test/staff.test.ts`: revoke → link invalid; reissue → old link invalid, new works; deactivate → that person's sessions in this org revoked (next request fails) but other-org sessions survive; reactivate; last active admin cannot be deactivated or lose `tenant_admin` (`last_admin`); reset → all sessions revoked, link 24 h single-use, old password fails
-- [ ] T068 [P] [US4] `apps/api/test/resets.test.ts`: `POST /password-resets/complete` validates length ≥ 10, expiry, single use, rate limit; Super Admin reset for an org admin
+- [X] T067 [P] [US4] Extend `apps/api/test/staff.test.ts`: revoke → link invalid; reissue → old link invalid, new works; deactivate → that person's sessions in this org revoked (next request fails) but other-org sessions survive; reactivate; last active admin cannot be deactivated or lose `tenant_admin` (`last_admin`); reset → all sessions revoked, link 24 h single-use, old password fails
+- [X] T068 [P] [US4] `apps/api/test/resets.test.ts`: `POST /password-resets/complete` validates length ≥ 10, expiry, single use, rate limit; Super Admin reset for an org admin
 
 ### Implementation for User Story 4
 
-- [ ] T069 [US4] Implement in `apps/api/src/modules/staff/staff.service.ts` + controller: revoke/reissue invitation, deactivate/reactivate membership (with `session_revoke_person(person, reason, org)`), last-admin guard
-- [ ] T070 [US4] Implement `apps/api/src/modules/staff/resets.service.ts` + controllers `POST /orgs/:slug/staff/:membershipId/reset-password`, `POST /platform/organizations/:id/admins/:membershipId/reset-password`, `POST /password-resets/complete`
-- [ ] T071 [US4] Extend `apps/api/test/isolation.test.ts` to every US4 route (revoke, reissue, deactivate, reactivate, reset)
+- [X] T069 [US4] Implement in `apps/api/src/modules/staff/staff.service.ts` + controller: revoke/reissue invitation, deactivate/reactivate membership (with `session_revoke_person(person, reason, org)`), last-admin guard
+- [X] T070 [US4] Implement `apps/api/src/modules/staff/resets.service.ts` + controllers `POST /orgs/:slug/staff/:membershipId/reset-password`, `POST /platform/organizations/:id/admins/:membershipId/reset-password`, `POST /password-resets/complete`
+- [X] T071 [US4] Extend `apps/api/test/isolation.test.ts` to every US4 route (revoke, reissue, deactivate, reactivate, reset)
 - [ ] T072 [P] [US4] Web: staff row actions (change access drawer, deactivate/reactivate with `ConfirmDialog`, reset password dialog with one-time link) in `apps/web/src/pages/app/settings/StaffPage.tsx`; `apps/web/src/pages/auth/ResetPage.tsx` (token from fragment)
 
 **Checkpoint**: Offboarding and resets satisfy SC-004.
@@ -211,13 +211,13 @@ immediate effect, last-admin protection.
 
 ### Tests for User Story 5
 
-- [ ] T073 [P] [US5] Extend `apps/api/test/platform.test.ts`: suspend requires reason, revokes org sessions, returns `organization_suspended` to members, keeps data; reactivate restores `suspended_from`; deactivate only from suspended; invalid transitions refused; module switch accepts only `KNOWN_MODULES`; practitioner assignable only while `clinical` is on; organization list exposes no patient fields; every action writes a platform audit entry
+- [X] T073 [P] [US5] Extend `apps/api/test/platform.test.ts`: suspend requires reason, revokes org sessions, returns `organization_suspended` to members, keeps data; reactivate restores `suspended_from`; deactivate only from suspended; invalid transitions refused; module switch accepts only `KNOWN_MODULES`; practitioner assignable only while `clinical` is on; organization list exposes no patient fields; every action writes a platform audit entry
 
 ### Implementation for User Story 5
 
-- [ ] T074 [US5] Implement `apps/api/src/modules/platform/lifecycle.service.ts` + routes `POST /platform/organizations/:id/status`, `PUT /platform/organizations/:id/modules`
+- [X] T074 [US5] Implement `apps/api/src/modules/platform/lifecycle.service.ts` + routes `POST /platform/organizations/:id/status`, `PUT /platform/organizations/:id/modules`
 - [ ] T075 [US5] Web: lifecycle actions with reason dialog, status history and module toggles on `apps/web/src/pages/platform/OrganizationDetailPage.tsx`; suspended-organization screen in `apps/web/src/shell/AppShell.tsx` that keeps unsaved form state in place
-- [ ] T076 [US5] Extend `apps/api/test/isolation.test.ts`: a tenant admin of any organization gets 403/404 on every `/platform/*` route, and a password-level Super Admin session gets `mfa_required`
+- [X] T076 [US5] Extend `apps/api/test/isolation.test.ts`: a tenant admin of any organization gets 403/404 on every `/platform/*` route, and a password-level Super Admin session gets `mfa_required`
 
 **Checkpoint**: SaaS operations for v2 §20.6 (initial subset) work.
 
@@ -231,12 +231,12 @@ immediate effect, last-admin protection.
 
 ### Tests for User Story 6
 
-- [ ] T077 [P] [US6] `apps/api/test/audit.test.ts`: filters by date range, actor, action; cursor pagination; org A never sees org B; Receptionist 403; no entry contains tokens, passwords, codes or hashes (scan `details` of all entries produced by the whole suite's flows)
+- [X] T077 [P] [US6] `apps/api/test/audit.test.ts`: filters by date range, actor, action; cursor pagination; org A never sees org B; Receptionist 403; no entry contains tokens, passwords, codes or hashes (scan `details` of all entries produced by the whole suite's flows)
 
 ### Implementation for User Story 6
 
-- [ ] T078 [US6] Implement `apps/api/src/modules/audit/audit.controller.ts` (`GET /orgs/:slug/audit`) and `GET /platform/audit` in `apps/api/src/modules/platform/platform.controller.ts`
-- [ ] T079 [US6] Extend `apps/api/test/isolation.test.ts` to both audit routes (cross-organization and non-platform access)
+- [X] T078 [US6] Implement `apps/api/src/modules/audit/audit.controller.ts` (`GET /orgs/:slug/audit`) and `GET /platform/audit` in `apps/api/src/modules/platform/platform.controller.ts`
+- [X] T079 [US6] Extend `apps/api/test/isolation.test.ts` to both audit routes (cross-organization and non-platform access)
 - [ ] T080 [P] [US6] Web: `apps/web/src/pages/app/AuditPage.tsx` and `apps/web/src/pages/platform/PlatformAuditPage.tsx` (filter bar, table, readable action labels in en/ur, empty state)
 
 **Checkpoint**: All six stories complete.

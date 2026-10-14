@@ -53,9 +53,9 @@ export class SessionService {
     await tx.execute('select session_revoke($1, $2)', [hashToken(token), reason]);
   }
 
-  /** Ends every session of a person, optionally keeping the caller's own. */
-  async revokePerson(tx: Tx, personId: string, reason: string, keepSessionId: string | null = null): Promise<number> {
-    const row = await tx.one<{ n: number }>('select session_revoke_person($1, $2, $3) as n', [personId, reason, keepSessionId]);
+  /** Ends a person's sessions (only those working in `orgId` when given), optionally keeping the caller's own. */
+  async revokePerson(tx: Tx, personId: string, reason: string, keepSessionId: string | null = null, orgId: string | null = null): Promise<number> {
+    const row = await tx.one<{ n: number }>('select session_revoke_person($1, $2, $3, $4) as n', [personId, reason, keepSessionId, orgId]);
     return row.n;
   }
 
