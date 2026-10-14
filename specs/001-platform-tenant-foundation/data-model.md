@@ -4,6 +4,8 @@ Fresh baseline migration `0001_foundation.sql`. All ids are `uuid` (`gen_random_
 times `timestamptz`. "Org-owned" means the table has `organization_id` and the RLS policy
 `organization_id = current_org()`; "+platform" adds `or is_platform()`.
 
+Glossary: **Person** in this feature is the v2 document's **User** (one global login identity).
+
 ## Session helper functions
 
 | Function | Returns | Source |
@@ -91,6 +93,7 @@ templates and leaves status `setup_required`.
 | active | boolean | default true; an organization keeps ≥ 1 active facility |
 | created_at, updated_at | timestamptz | |
 
+Setup check "profile complete": organization name, phone and address present.
 Setup check "facility complete": at least one active facility with address, effective timezone
 and at least one opening-hours range.
 

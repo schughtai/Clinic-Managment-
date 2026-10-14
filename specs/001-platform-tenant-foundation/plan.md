@@ -29,15 +29,18 @@ security; application role `clinic_app` (non-owner, no BYPASSRLS)
 
 **Testing**: Vitest 3 + supertest on real PostgreSQL (API); Vitest + Testing Library + jsdom (web)
 
-**Target Platform**: Linux server or any Node host for the API; static hosting for the web app;
-evergreen browsers (Chrome/Edge for voice dictation)
+**Target Platform**: One Node service that serves the API under `/api` and the built web app for
+every other path (same origin, so cookie sessions need no cross-site settings); staging on
+Railway with Railway PostgreSQL; evergreen browsers (Chrome/Edge for voice dictation)
 
 **Project Type**: Web application (API + SPA) in an npm workspace monorepo
 
-**Performance Goals**: Session + permission resolution adds ≤ 1 indexed query per request;
+**Performance Goals**: Session, membership and permission resolution is one database round trip
+per request (a single security-definer function);
 pages usable within 2 s on a mid-range phone over 4G
 
-**Constraints**: No Redis/queues (Principle V); no patient data in logs or URLs; tokens never in
+**Constraints**: The API refuses to start in production if its database role is a superuser or
+has BYPASSRLS (managed hosts hand out superuser URLs); No Redis/queues (Principle V); no patient data in logs or URLs; tokens never in
 query strings; Node 20 compatible tool versions (Vite 6, Vitest 3)
 
 **Scale/Scope**: Hundreds of organizations, tens of staff each; ~17 screens; ~35 endpoints
@@ -147,9 +150,11 @@ workspaces) until 002/005 port it.
    factories, RLS tests.
 3. Story 1 (P1) platform onboarding with MFA; Story 2 (P1) sign-in routing and shell;
    Story 3 (P1) setup and team. Each story: API + tests + screens.
-4. Story 4 (P2) staff lifecycle; Story 5 (P2) organization lifecycle and modules.
-5. Story 6 (P3) audit views.
-6. Polish: demo seed, dev runner, README, CI workflow update, responsive/RTL/accessibility pass,
+4. Staging deployment on Railway (after Story 2): single service, migrations as pre-deploy
+   command with the admin URL, restricted app role, backups enabled and one restore tested.
+5. Story 4 (P2) staff lifecycle; Story 5 (P2) organization lifecycle and modules.
+6. Story 6 (P3) audit views.
+7. Polish: demo seed, dev runner, README, CI workflow update, responsive/RTL/accessibility pass,
    quickstart walkthrough in the browser.
 
 ## Complexity Tracking

@@ -201,15 +201,17 @@ time and target, and confirm one organization never sees another's entries.
 - **FR-002**: Organization lifecycle states MUST be Provisioning, SetupRequired, Active, Suspended
   and Deactivated, with only these transitions: Provisioning→SetupRequired (on creation complete),
   SetupRequired→Active (setup checks pass), Active↔Suspended, SetupRequired↔Suspended,
-  Suspended→Deactivated, and each transition MUST be audited with actor and reason.
+  Suspended→Deactivated, and each transition MUST be audited with actor and reason. Activation
+  is done by the organization's admin or by a Super Admin, and only when setup checks pass.
 - **FR-003**: Suspended and Deactivated organizations MUST block all organization workflows for
   their members while preserving all data.
 - **FR-004**: Each organization MUST have one or more facilities, each with name, type (clinic
   branch for now), address, contact phone, timezone and weekly opening hours.
 - **FR-005**: Organization settings MUST include currency (default PKR), default language (English
   or Urdu), timezone (default Asia/Karachi) and date format; facilities MAY override timezone.
-- **FR-006**: Setup checks for activation MUST require: organization profile complete, at least one
-  facility with address, timezone and opening hours, and at least one active administrator.
+- **FR-006**: Setup checks for activation MUST require: organization profile complete (name,
+  contact phone and address), at least one facility with address, timezone and opening hours, and
+  at least one active administrator.
 - **FR-007**: Super Admin MUST be able to switch optional modules on or off per organization; the
   clinical module MUST default to off and only modules that exist may be listed.
 
@@ -220,7 +222,8 @@ time and target, and confirm one organization never sees another's entries.
 - **FR-009**: Sign-in MUST lock an account for 15 minutes after 5 consecutive failures and record
   failed and successful sign-ins as security events.
 - **FR-010**: Super Admin sign-in MUST require a time-based one-time code from an authenticator
-  app; first sign-in MUST force enrolment; staff MAY optionally enrol.
+  app; first sign-in MUST force enrolment; any staff member MAY enrol from their account page,
+  after which their sign-in also requires a code.
 - **FR-011**: Sessions MUST expire after 12 hours, end on sign-out, and be revoked immediately
   when the password is reset, the membership is deactivated, or the organization is suspended.
 - **FR-012**: After sign-in the system MUST route Super Admins to the platform console and other
