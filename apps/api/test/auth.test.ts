@@ -19,7 +19,27 @@ describe('sign-in routing and context', () => {
     expect(login.body).toEqual({ next: 'ready', destination: `/app/${org.slug}/dashboard` });
     const me = await agent.get('/api/auth/me');
     expect(me.body.context).toEqual({ orgSlug: org.slug, facilityId: org.facilityIds[0] });
-    expect(me.body.permissions).toEqual(['dashboard.read', 'facility.read', 'organization.read']);
+    expect(me.body.permissions).toEqual([
+      'appointments.manage',
+      'appointments.read',
+      'consent.manage',
+      'dashboard.read',
+      'documents.read',
+      'documents.upload',
+      'facility.read',
+      'history.write',
+      'invoices.read',
+      'organization.read',
+      'patients.create',
+      'patients.merge',
+      'patients.read',
+      'patients.update',
+      'payments.record',
+      'queue.manage',
+      'refunds.request',
+      'reminders.send',
+      'schedule.read',
+    ]);
   });
 
   it('asks a person with two organizations, or several branches, to choose', async () => {
