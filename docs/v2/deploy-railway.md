@@ -13,8 +13,10 @@ One Railway project with two services:
 | `Postgres` | Railway's PostgreSQL template (PostgreSQL 16+, UTF8, `pg_trgm` and `btree_gist` available) |
 | `clinic` | This repository. Builds both apps; the API serves the web app and `/api` on one domain |
 
-`railway.json` in the repository root sets the build, the pre-deploy migration, the start command
-and the health check (`/api/health/ready`, which also checks the database).
+`railway.json` in the repository root sets the build, the start command and the health check
+(`/api/health/ready`, which also checks the database). The start command runs `npm run db:migrate`
+first: migrations are idempotent and take an advisory lock, so a restart simply finds nothing to do.
+(A pre-deploy command was tried first but did not run on the first staging deploy.)
 
 ## Variables on the `clinic` service
 
@@ -41,7 +43,7 @@ security. The API checks its role at start-up and refuses to run as a superuser 
 
 1. Create the project, add PostgreSQL, add the GitHub repository (branch of your choice) as a
    service, set the variables above, and generate a public domain.
-2. Deploy. The pre-deploy step runs `npm run db:migrate`; then `npm start` starts the API.
+2. Deploy. The start command applies migrations (creating the `clinic_app` role), then starts the API.
 3. Create the Super Admin from your computer with the Railway CLI linked to the project:
 
    ```bash
