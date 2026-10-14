@@ -7,6 +7,7 @@ import { AppModule } from './app.module';
 import { accessLogMiddleware, originCheckMiddleware, requestIdMiddleware } from './common/http-middleware';
 import { NestPinoLogger, createLogger } from './common/logger';
 import type { AppConfig } from './config/config';
+import { DbService } from './db/db.service';
 
 export interface CreatedApp {
   app: NestExpressApplication;
@@ -38,5 +39,9 @@ export async function createApp(config: AppConfig): Promise<CreatedApp> {
     maxAge: 600,
   });
   app.enableShutdownHooks();
+  if (config.nodeEnv === 'production') {
+    // Refuse to serve anything with a database role that ignores row-level security.
+    await app.get(DbService).assertRestrictedRole();
+  }
   return { app, logger };
 }
