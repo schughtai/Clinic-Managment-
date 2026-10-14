@@ -8,6 +8,11 @@ import type { AppConfig } from './config/config';
 import { CoreModule } from './core.module';
 import { HealthController } from './health.controller';
 import { AuditController } from './modules/audit/audit.controller';
+import { ScheduleController } from './modules/schedule/schedule.controller';
+import { ScheduleService } from './modules/schedule/schedule.service';
+import { AppointmentsController } from './modules/appointments/appointments.controller';
+import { AppointmentsService } from './modules/appointments/appointments.service';
+import { QueueService } from './modules/queue/queue.service';
 import { AccessGuard } from './modules/identity/access.guard';
 import { AuthController } from './modules/identity/auth.controller';
 import { AuthService } from './modules/identity/auth.service';
@@ -29,12 +34,15 @@ export class AppModule {
     return {
       module: AppModule,
       imports: [CoreModule.register(config, logger), ThrottlerModule.forRoot(throttlerOptions(config))],
-      controllers: [HealthController, AuthController, InvitationsController, PlatformController, DashboardController, SettingsController, StaffController, ResetsController, AuditController],
+      controllers: [HealthController, AuthController, InvitationsController, PlatformController, DashboardController, SettingsController, StaffController, ResetsController, AuditController, ScheduleController, AppointmentsController],
       providers: [
         AuthService,
         InvitationsService,
         OrganizationsService,
         LifecycleService,
+        ScheduleService,
+        AppointmentsService,
+        QueueService,
         SettingsService,
         StaffService,
         // Order matters: the rate limit runs first, then the session and permission check.
