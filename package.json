@@ -21,6 +21,8 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "db:migrate": "npm run db:migrate:prod --workspace apps/api",
     "platform:create-admin": "npm run platform:create-admin --workspace apps/api --",
-    "platform:reset-mfa": "npm run platform:reset-mfa --workspace apps/api --"
+    "platform:reset-mfa": "npm run platform:reset-mfa --workspace apps/api --",
+    "platform:create-admin:prod": "node apps/api/dist/cli/create-platform-admin.js",
+    "platform:reset-mfa:prod": "node apps/api/dist/cli/reset-platform-mfa.js"
   }
 }

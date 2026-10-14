@@ -142,9 +142,9 @@ sidebar, blocked pages.
 **Purpose**: Run the product on real hosting early, with synthetic data only. Deploying to the
 user's Railway account needs the user's confirmation at that moment.
 
-- [ ] T053 Serve the built web app from the API in production: static files from `apps/web/dist` with SPA fallback for every non-`/api` GET, long cache for hashed assets, no cache for `index.html`, in `apps/api/src/bootstrap.ts`, with a test in `apps/api/test/static.test.ts`
-- [ ] T054 [P] Add Railway build config `railway.json` (build `npm ci && npm run build`, pre-deploy `npm run db:migrate`, start `npm run start --workspace apps/api`, health check `/api/health`) and pin Node 20 via `engines` and `.nvmrc`
-- [ ] T055 [P] Write `docs/v2/deploy-railway.md`: services, environment variables (`DATABASE_URL` for `clinic_app`, `ADMIN_DATABASE_URL` = Railway superuser URL used only for migrations, `SESSION_SECRET`, `MFA_ENCRYPTION_KEY`, `ALLOWED_ORIGINS`, `COOKIE_SECURE=true`, `TRUST_PROXY=1`, `NODE_ENV=production`), Super Admin bootstrap via `railway run`, region and data-residency note, backups and restore procedure
+- [X] T053 Serve the built web app from the API in production: static files from `apps/web/dist` with SPA fallback for every non-`/api` GET, long cache for hashed assets, no cache for `index.html`, in `apps/api/src/bootstrap.ts`, with a test in `apps/api/test/static.test.ts`
+- [X] T054 [P] Add Railway build config `railway.json` (build `npm ci && npm run build`, pre-deploy `npm run db:migrate`, start `npm run start --workspace apps/api`, health check `/api/health`) and pin Node 20 via `engines` and `.nvmrc`
+- [X] T055 [P] Write `docs/v2/deploy-railway.md`: services, environment variables (`DATABASE_URL` for `clinic_app`, `ADMIN_DATABASE_URL` = Railway superuser URL used only for migrations, `SESSION_SECRET`, `MFA_ENCRYPTION_KEY`, `ALLOWED_ORIGINS`, `COOKIE_SECURE=true`, `TRUST_PROXY=1`, `NODE_ENV=production`), Super Admin bootstrap via `railway run`, region and data-residency note, backups and restore procedure
 - [ ] T056 With the user's confirmation, create the Railway project, PostgreSQL and app service, set variables, deploy, bootstrap the Super Admin and run quickstart scenarios 1–4 against the staging URL; record results in `docs/v2/PROGRESS.md`
 - [ ] T057 Enable Railway PostgreSQL backups, perform one restore into a scratch database, verify row counts and RLS, and record the result and whether storage is encrypted at rest in `docs/v2/deploy-railway.md`
 

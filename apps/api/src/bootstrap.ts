@@ -6,6 +6,7 @@ import type { Logger } from 'pino';
 import { AppModule } from './app.module';
 import { accessLogMiddleware, originCheckMiddleware, requestIdMiddleware } from './common/http-middleware';
 import { NestPinoLogger, createLogger } from './common/logger';
+import { webAppHandlers } from './common/web-app';
 import type { AppConfig } from './config/config';
 import { DbService } from './db/db.service';
 
@@ -29,6 +30,9 @@ export async function createApp(config: AppConfig): Promise<CreatedApp> {
   app.use(originCheckMiddleware(config.allowedOrigins));
   app.use(cookieParser());
   app.useBodyParser('json', { limit: '512kb' });
+  if (config.webDistDir !== undefined) {
+    for (const handler of webAppHandlers(config.webDistDir)) app.use(handler);
+  }
   app.setGlobalPrefix('api');
   app.enableCors({
     origin: [...config.allowedOrigins],
