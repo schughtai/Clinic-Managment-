@@ -269,8 +269,8 @@ call any clinical action as an admin in an organization with the module off and 
 **Patient registry**
 
 - **FR-001**: System MUST register patients with name (English and/or Urdu script), sex, date of
-  birth or approximate age, phone(s), address, emergency contact and a patient number unique within
-  the organization and formatted by organization setting.
+  birth or approximate age, phone(s), address, emergency contact and a patient number from that organization's own
+  sequence and prefix; each organization numbers its patients independently of all others.
 - **FR-002**: Patient search MUST match name spelling variants (Roman Urdu phonetic matching), Urdu
   script, phone number and patient number, within the user's organization only.
 - **FR-003**: Registration MUST check for possible duplicates (phone plus similar name, or similar
@@ -414,7 +414,10 @@ call any clinical action as an admin in an organization with the module off and 
   are out of scope (v2 Phase 2+).
 - Card and wallet payments are recorded manually; no gateway integration yet.
 - Tax defaults to none for Pakistan clinics and is configurable.
-- Patient numbers default to a facility-independent sequence per organization (e.g. P-000123).
+- Each organization (each clinic business on the platform) has its own patient-number sequence
+  starting at 1 and its own prefix set by its admin (for example `SHC-000123` for one clinic and
+  `CMC-000001` for another). Numbers never collide within an organization, are shared by all its
+  branches, and are unrelated to any other organization's numbers.
 - Voice dictation uses the browser's built-in speech recognition, which may send audio to the
   browser vendor; the organization is told this before staff use it.
 - Hosting, backups, monitoring and restore tests are operational work tracked alongside this
