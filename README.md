@@ -1,104 +1,111 @@
-# Clinic Management Platform
+# Clinic Management Platform (v2, hospital-ready)
 
-A multi-tenant clinic management system for small private clinics in Pakistan. One system serves many clinics, and each clinic sees only its own data. It handles patients, appointments and queues, visit notes with voice and handwriting input, prescriptions, billing, daily closing, reminders and reports, in English and Urdu.
+A multi-tenant SaaS for clinics that can grow into a hospital system. One platform hosts many
+organizations (clinic businesses), each with one or more branches, and each organization sees
+only its own data. The product reference is
+[docs/v2/clinic_management_app_hospital_ready.md](docs/v2/clinic_management_app_hospital_ready.md);
+the rules every change follows are in the [constitution](.specify/memory/constitution.md).
 
-Status: first working version, ready for pilot clinics. See "Limitations" before using it with real patients.
+Status: **feature 001 (platform and tenant foundation) is built.** Patients, appointments, queue
+and billing (feature 002) are specified in [specs/002-v2-clinic-mvp](specs/002-v2-clinic-mvp/spec.md)
+and come next. v1 code that is not rebuilt yet lives, unbuilt, in [legacy/](legacy/README.md).
+
+## Roles in this release
+
+| Role | What they do |
+| --- | --- |
+| **Super Admin** (platform) | Creates organizations, invites their first administrator, suspends or reactivates them, switches modules. Must use an authenticator app. Has no access to patient data. |
+| **Clinic / Hospital Admin** | Organization profile, branches and hours, staff invitations, roles and branch access, password resets, audit log, activation. |
+| **Receptionist** | Dashboard now; patients, appointments and queue arrive with feature 002. |
+| **Finance** | Dashboard now; invoices, payments and refunds arrive with feature 002. |
+
+Doctors appear on schedules but sign in only once the clinical module and Practitioner role are
+built (v2 Phase 1B). The clinical module is off for every organization by default.
 
 ## Quick start (development)
 
-You need Node 20.10 or newer. Nothing else: the database is a real PostgreSQL that starts from an npm package.
+You need Node 20.10 or newer. Nothing else: PostgreSQL starts from an npm package.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open http://localhost:3000. The first start downloads PostgreSQL, creates the database, applies migrations and adds a demo clinic.
+Open http://localhost:3000. The first start creates the database and synthetic demo data.
+All demo accounts use the password `demo-password-123`.
 
-Demo sign-in (synthetic data, development only). The password for all three is `demo-password-123`.
-
-| Role | Phone |
+| Who | Sign in with |
 | --- | --- |
-| Owner | 0300 1000001 |
-| Doctor | 0300 1000002 |
-| Receptionist | 0300 1000003 |
+| Super Admin | `owner@demo.test` — authenticator key `JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP` (add it to any authenticator app, or run with `DEV_PRINT_TOTP=true` to print codes) |
+| Shifa Health Clinic admin | `0300 1000001` |
+| Shifa receptionist (Gulberg branch only) | `0300 1000002` |
+| Shifa finance | `0300 1000003` |
+| City Medical Centre admin | `0300 1000004` |
 
-Data is kept in `apps/api/data` between runs. Delete that folder to start fresh.
+Data is kept in `apps/api/data`. Delete that folder to start fresh.
 
 ## What is in the box
 
-- **Front desk:** patient search that finds Muhammad, Mohammed and Mohamad together, and finds Urdu names. Appointments with slots, walk-in tokens and a live queue. Invoices in whole rupees, partial payments, dues, daily cash closing. Click-to-send WhatsApp reminders and payment reminders.
-- **Doctors:** visit notes with vitals, a patient timeline, prescriptions with templates, a printable prescription and a WhatsApp copy.
-- **Voice and handwriting:** a microphone button on every note field (browser speech to text, English or Urdu). Photos of handwritten notes, or writing on a touch screen, saved with the visit. With AI switched on, handwriting is read into editable text and dictated notes can be tidied into fields. Nothing from AI is saved without the doctor's review.
-- **Owner:** staff accounts and roles, doctors and working hours, leave days, patient import from CSV, full data download, activity log, per-doctor report.
+- **Sign-in:** phone or email and password, lockout after 5 wrong attempts, server-side sessions
+  that end immediately on sign-out, reset, deactivation or suspension. Authenticator codes are
+  required for Super Admins and optional for everyone else, with single-use recovery codes.
+- **Platform console:** organizations with status, branches and staff counts; create an
+  organization with its first branch; invite its administrator; suspend, reactivate, deactivate;
+  clinical module switch; administrator password reset; platform audit log.
+- **Organization workspace:** setup checklist and activation, organization and regional settings
+  (currency, language, timezone, date format), branches with weekly opening hours, staff
+  invitations with roles and branch access, change access, deactivate and reactivate, reset links,
+  read-only roles, filtered audit log. Invitation and reset links are shown once and can be sent by
+  WhatsApp click-to-send.
+- **Design:** v2 design tokens, keyboard-friendly components, English and Urdu (right-to-left),
+  phone-width layouts, and a voice dictation field (browser speech, English or Urdu) used for
+  addresses and reasons now and for every note field in later features.
 
 ## Project layout
 
 ```
-apps/api    NestJS API, PostgreSQL migrations, tests
-apps/web    Vue 3 + Vite web app
-docs        Business document, MVP plan, decision records, progress log
+apps/api     NestJS API, SQL migrations, operator commands, tests on real PostgreSQL
+apps/web     React 19 + Vite web app (served by the API in production)
+specs/       Spec Kit features: spec, plan, research, data model, API contract, tasks
+docs/v2      Product document, decision records 0007+, deployment and operations guides
+docs/v1      v1 documents and decision records 0001–0006
+legacy/      v1 code awaiting port (not built)
 ```
-
-Decision records in `docs/decisions` explain the main choices: architecture, sign-in, AI features, money rules, the development database and the web stack.
 
 ## Commands
 
 | Command | What it does |
 | --- | --- |
-| `npm run dev` | API and web app together |
-| `npm test` | 206 API tests on a real PostgreSQL |
-| `npm run typecheck` | Type check both apps |
-| `npm run lint` | Lint the API |
-| `npm run build` | Production build of both apps |
-| `npm run db:migrate` | Apply migrations on a deployed database |
+| `npm run dev` | API and web app together, with demo data |
+| `npm test` | API tests on a real PostgreSQL (row-level security, isolation of every route) and web tests |
+| `npm run typecheck` / `npm run lint` / `npm run build` | Checks and production build of both apps |
+| `npm run db:migrate` | Apply migrations (needs `ADMIN_DATABASE_URL` and `DATABASE_URL`) |
+| `npm run platform:create-admin -- --name "Owner" --email you@example.com` | Create the first Super Admin |
+| `npm run platform:reset-mfa -- --email you@example.com` | Remove a Super Admin's authenticator after an identity check |
 
 ## Deploying
 
-1. **Database.** Any managed PostgreSQL 14 or newer with the UTF8 encoding. Allow the `pg_trgm` and `btree_gist` extensions. Create one administrator login for migrations. The migration run creates the restricted `clinic_app` role.
-2. **Configuration.** Copy `apps/api/.env.example` and fill it in. The server refuses to start in production with a placeholder secret, a non-https origin or a missing database URL.
-3. **Migrate, then start.** `npm run build`, then `npm run db:migrate` with both database URLs set, then `npm run start --workspace apps/api`.
-4. **Web app.** Serve `apps/web/dist` as static files on the same domain as the API, and forward `/api` to the API server. Using one domain keeps cookies simple. Single-page routing needs unknown paths to return `index.html`.
-5. **Photos.** Set `UPLOAD_DIR` to a persistent disk. On a host with temporary storage, photos would be lost on every restart.
-6. **First clinic.** Set `SIGNUP_CODE`, then call `POST /api/auth/register-clinic` with that code to create a clinic and its owner. Remove the code afterwards to close signup.
-7. **Health checks.** `GET /api/health` (alive) and `GET /api/health/ready` (database reachable).
-8. **Backups.** Turn on automated daily backups with your database host and test a restore before real patients are entered. This is not done for you.
-9. **Roll back.** Migrations only add. Roll back the API by redeploying the previous build, which works with the newer schema. A destructive change would need its own migration and plan.
-
-## Configuration
-
-| Variable | Purpose |
-| --- | --- |
-| `DATABASE_URL` | Restricted application login (`clinic_app`) |
-| `ADMIN_DATABASE_URL` | Administrator login, used only for migrations |
-| `SESSION_SECRET` | 32 or more random characters |
-| `ALLOWED_ORIGINS` | Web app address, https in production |
-| `TRUST_PROXY` | Number of reverse proxies in front of the API |
-| `SIGNUP_CODE` | Allows creating a clinic. Empty means signup is off |
-| `UPLOAD_DIR` | Folder for handwriting photos |
-| `ANTHROPIC_API_KEY` | Optional. Turns on AI features, which each clinic must still enable |
+See [docs/v2/deploy-railway.md](docs/v2/deploy-railway.md) (one service plus PostgreSQL; staging
+runs on Railway) and [docs/v2/operations.md](docs/v2/operations.md). In short: two database URLs
+(administrator for migrations, restricted `clinic_app` for the app — the app refuses to start as a
+superuser), `MFA_ENCRYPTION_KEY`, an https `ALLOWED_ORIGINS`, and `WEB_DIST_DIR` so the API serves
+the web app on the same domain.
 
 ## Security notes
 
-- Clinics are separated by PostgreSQL row-level security, not only by code. Tests prove one clinic cannot read or change another's data.
-- Sessions are httpOnly cookies. Passwords are hashed with bcrypt. Sign-in has rate limits and account lockout.
-- Every sensitive read and every change is written to an append-only activity log.
-- Clinical notes are visible to doctors and owners only. Reception has no access to them.
-- Passing the automated tests does not make the system secure. Before real patients, have a security review done and a lawyer check the customer terms. Pakistan has no enacted data protection law yet, but a draft treats health data as sensitive.
+- Organizations are separated by PostgreSQL row-level security as well as by code, and branches
+  are filtered the same way. Tests check every route for cross-organization access.
+- Super Admin status is separate from organization membership and opens no patient data.
+- Tokens for sessions, invitations and resets are random, stored only as hashes, and never appear
+  in server logs (invitation and reset tokens travel in the URL fragment).
+- Audit logs are append-only and refuse keys that look like secrets.
+- Passing tests does not make the system secure. Before real patients: a security review, a
+  tested backup restore, and a legal review of where data is hosted.
 
 ## Limitations
 
-- **AI features are untested against the live service.** They are written and tested with a stand-in. Try handwriting on real notes from your clinic before relying on it, especially Urdu handwriting. Accuracy has not been measured.
-- **Voice typing** uses the browser and works in Chrome and Edge. The browser sends audio to its vendor, so it needs internet and is not private.
-- **WhatsApp is click-to-send.** A person presses send. There is no automatic sending.
-- **Urdu screens** were translated without a native-speaker review. Many labels fall back to English.
-- **Sign-in is phone and password.** One-time codes by SMS are not built.
-- **No refunds.** An invoice that has taken money cannot be cancelled.
-- **No offline mode.** The app needs a connection.
-- **Single server.** Rate limits live in memory. Use one API process, or move the counters to a shared store first.
-- Patients without a phone number cannot be checked for duplicates on import.
-- Lab, pharmacy and hospital modules are not built. The plan is in `docs/mvp-plan.md`.
-
-## Known development-only advisories
-
-`npm audit` reports 3 findings in Vitest 3, which is used only for tests. Nothing from it ships. Moving to Node 22 allows upgrading to Vitest 5. Production dependencies have no known findings (`npm audit --omit=dev`).
+- Patients, appointments, queue and billing are not in this release (feature 002).
+- No email or SMS provider: invitation and reset links are shared by hand or WhatsApp.
+- Custom roles cannot be created yet; the four role templates are fixed.
+- Rate limits live in memory: run one API process.
+- Urdu text needs review by a native reader.
