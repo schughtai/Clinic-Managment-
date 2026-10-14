@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { addMember, createOrg, createPerson, memberAgent, startTestApp, type Agent, type TestApp, type TestOrg } from './support/app';
+import { createOrg, createPerson, memberAgent, startTestApp, type Agent, type TestApp, type TestOrg } from './support/app';
 
 /**
  * Concurrency guarantees from the spec (SC-003): simultaneous bookings for one slot give exactly one
