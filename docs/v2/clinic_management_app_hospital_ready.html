@@ -1,0 +1,2403 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Clinic Management Platform</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <style>
+@page { size: A4; margin: 17mm 17mm 18mm 17mm; }
+:root { color-scheme: light; }
+html { font-family: Arial, Helvetica, sans-serif; color: #1f2937; font-size: 10pt; line-height: 1.48; }
+body { max-width: 100%; margin: 0 auto; }
+.title { color: #0f766e; font-size: 30pt; line-height: 1.1; margin: 0 0 8pt; font-weight: 700; }
+.subtitle { color: #64748b; font-size: 13pt; line-height: 1.3; margin: 0 0 22pt; }
+h1, h2, h3, h4 { color: #0f766e; line-height: 1.22; break-after: avoid; page-break-after: avoid; }
+h1 { font-size: 19pt; margin: 24pt 0 10pt; border-bottom: 1px solid #cbd5e1; padding-bottom: 4pt; }
+h2 { font-size: 14pt; margin: 17pt 0 7pt; color: #115e59; }
+h3 { font-size: 11.5pt; margin: 12pt 0 5pt; color: #1d4ed8; }
+h4 { font-size: 10.5pt; margin: 10pt 0 4pt; color: #334155; }
+p { margin: 0 0 7pt; orphans: 3; widows: 3; }
+blockquote { margin: 10pt 0; padding: 8pt 12pt; border-left: 3px solid #0f766e; background: #f0fdfa; color: #334155; }
+strong { color: #17212f; }
+a { color: #0f766e; text-decoration: none; }
+ul, ol { margin: 3pt 0 9pt; padding-left: 22pt; }
+li { margin: 2pt 0; }
+table { border-collapse: collapse; width: 100%; margin: 9pt 0 14pt; font-size: 8.4pt; line-height: 1.32; break-inside: auto; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; page-break-inside: avoid; }
+th { background: #e6f4f1; color: #115e59; font-weight: 700; text-align: left; }
+th, td { border: 1px solid #cbd5e1; padding: 5pt 6pt; vertical-align: top; overflow-wrap: anywhere; }
+code { font-family: Consolas, 'Courier New', monospace; font-size: 8.3pt; color: #334155; background: #f1f5f9; padding: 1pt 2pt; }
+pre { font-family: Consolas, 'Courier New', monospace; font-size: 7.4pt; line-height: 1.28; white-space: pre-wrap; overflow-wrap: anywhere; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; padding: 8pt; margin: 8pt 0 12pt; break-inside: auto; }
+pre code { background: transparent; padding: 0; }
+hr { border: 0; border-top: 1px solid #e2e8f0; margin: 16pt 0; }
+#TOC { break-after: page; page-break-after: always; }
+#TOC ul { list-style: none; padding-left: 14pt; }
+#TOC > ul { padding-left: 0; }
+#TOC li { margin: 5pt 0; }
+@media screen { body { max-width: 900px; margin: 36px auto; padding: 0 28px; } }
+
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Clinic Management Platform</h1>
+<p class="subtitle">Product Requirements, Application Flows, UI/UX
+Design, and Hospital-Ready Architecture</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#product-vision" id="toc-product-vision">1. Product
+Vision</a></li>
+<li><a href="#product-scope-by-release"
+id="toc-product-scope-by-release">2. Product Scope by Release</a></li>
+<li><a href="#user-roles-across-the-product-roadmap"
+id="toc-user-roles-across-the-product-roadmap">3. User Roles Across the
+Product Roadmap</a></li>
+<li><a href="#feature-list" id="toc-feature-list">4. Feature
+List</a></li>
+<li><a href="#end-to-end-clinic-workflow"
+id="toc-end-to-end-clinic-workflow">5. End-to-End Clinic
+Workflow</a></li>
+<li><a href="#detailed-user-flows" id="toc-detailed-user-flows">6.
+Detailed User Flows</a></li>
+<li><a href="#status-models" id="toc-status-models">7. Status
+Models</a></li>
+<li><a href="#main-application-screens"
+id="toc-main-application-screens">8. Main Application Screens</a></li>
+<li><a href="#hospital-expansion-roadmap"
+id="toc-hospital-expansion-roadmap">9. Hospital Expansion
+Roadmap</a></li>
+<li><a href="#hospital-ready-technical-architecture"
+id="toc-hospital-ready-technical-architecture">10. Hospital-Ready
+Technical Architecture</a></li>
+<li><a href="#core-data-model" id="toc-core-data-model">11. Core Data
+Model</a></li>
+<li><a href="#critical-business-and-engineering-requirements"
+id="toc-critical-business-and-engineering-requirements">12. Critical
+Business and Engineering Requirements</a></li>
+<li><a href="#non-functional-requirements"
+id="toc-non-functional-requirements">13. Non-Functional
+Requirements</a></li>
+<li><a href="#initial-delivery-backlog"
+id="toc-initial-delivery-backlog">14. Initial Delivery Backlog</a></li>
+<li><a href="#decisions-to-confirm-before-detailed-implementation"
+id="toc-decisions-to-confirm-before-detailed-implementation">15.
+Decisions to Confirm Before Detailed Implementation</a></li>
+<li><a href="#recommended-product-direction"
+id="toc-recommended-product-direction">16. Recommended Product
+Direction</a></li>
+<li><a href="#uiux-and-visual-design-specifications"
+id="toc-uiux-and-visual-design-specifications">17. UI/UX and Visual
+Design Specifications</a></li>
+<li><a href="#multi-tenant-application-flow-and-initial-roles"
+id="toc-multi-tenant-application-flow-and-initial-roles">18.
+Multi-Tenant Application Flow and Initial Roles</a></li>
+<li><a href="#updated-initial-release-scope"
+id="toc-updated-initial-release-scope">19. Updated Initial Release
+Scope</a></li>
+<li><a href="#review-findings-and-improvements"
+id="toc-review-findings-and-improvements">20. Review Findings and
+Improvements</a></li>
+<li><a href="#consolidated-application-flow"
+id="toc-consolidated-application-flow">21. Consolidated Application
+Flow</a></li>
+</ul>
+</nav>
+<blockquote>
+<p><strong>Review update:</strong> This document has been reviewed for
+scope consistency, multi-tenant security, role boundaries,
+patient-history integrity, and the clinic-to-hospital roadmap. See
+Sections 20–21 for review outcomes and the consolidated application
+flow.</p>
+</blockquote>
+<h1 id="product-vision">1. Product Vision</h1>
+<p>Build a healthcare management platform that launches with outpatient
+clinics and can later expand into a hospital management system without
+requiring a complete rewrite.</p>
+<p>The long-term product should support the complete outpatient journey:
+patient registration, appointments, check-in, queue management,
+consultation, prescriptions, diagnostic orders, billing, and follow-up
+care. The initial release is narrower: four staff roles for
+administration, patient-reported history, appointments/queues, and
+finance. Signed clinical workflows require a later clinician-role
+gate.</p>
+<h2 id="product-strategy">Product strategy</h2>
+<ul>
+<li><strong>Start with clinics:</strong> Deliver a focused, commercially
+useful MVP for general practice and other outpatient clinics.</li>
+<li><strong>Design for expansion:</strong> Establish reusable healthcare
+foundations for organizations, facilities, locations, users, patients,
+encounters, clinical records, orders, billing, and audit.</li>
+<li><strong>Add hospital capabilities incrementally:</strong> Introduce
+departments, wards, beds, admissions, inpatient encounters, nursing
+workflows, operating theatres, and other hospital modules as separate
+capabilities.</li>
+<li><strong>Avoid premature complexity:</strong> Do not build every
+hospital workflow in the first release. Make the initial data model and
+module boundaries extensible.</li>
+</ul>
+<h2 id="applications-across-the-roadmap">Applications Across the
+Roadmap</h2>
+<ul>
+<li><strong>Initial staff web application:</strong> Super Admin console
+plus tenant workspaces for Clinic / Hospital Admin, Receptionist, and
+Finance.</li>
+<li><strong>Later clinician workspace:</strong> Doctor / Practitioner
+and additional clinical roles, enabled only after their permissions and
+clinical audit flows are implemented.</li>
+<li><strong>Later patient portal / mobile app:</strong> Appointment
+management, authorized records, invoices, and follow-ups, using a
+separate patient identity model.</li>
+<li><strong>REST API:</strong> Integrations with payment gateways,
+notification providers, laboratories, and third-party systems as each
+integration is prioritized.</li>
+</ul>
+<h1 id="product-scope-by-release">2. Product Scope by Release</h1>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Capability</th>
+<th>Clinic MVP</th>
+<th>Later hospital expansion</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Organization and facility management</td>
+<td>Clinic and branches</td>
+<td>Hospitals, campuses, facilities, buildings, floors, departments,
+units</td>
+</tr>
+<tr class="even">
+<td>Patient management</td>
+<td>Registration, demographics, patient-reported history, documents</td>
+<td>Enterprise-wide patient identity, record-linkage, and medical record
+number policies</td>
+</tr>
+<tr class="odd">
+<td>Scheduling</td>
+<td>Doctor appointments and walk-ins</td>
+<td>Outpatient, inpatient-related scheduling, procedures, theatre and
+equipment scheduling</td>
+</tr>
+<tr class="even">
+<td>Clinical records</td>
+<td>Patient-reported history only until clinician-role gate; then
+outpatient encounters</td>
+<td>Inpatient encounters, nursing documentation, care plans,
+multidisciplinary notes</td>
+</tr>
+<tr class="odd">
+<td>Queue management</td>
+<td>Reception and consultation queue</td>
+<td>Department queues and service-point workflows</td>
+</tr>
+<tr class="even">
+<td>Prescriptions</td>
+<td>Deferred until authorized clinician role is enabled</td>
+<td>Inpatient medication orders, medication administration records,
+formulary controls</td>
+</tr>
+<tr class="odd">
+<td>Diagnostics</td>
+<td>Lab orders and results in later MVP phase</td>
+<td>High-volume lab, radiology, imaging workflow and integration</td>
+</tr>
+<tr class="even">
+<td>Billing</td>
+<td>Service invoices, payments, receipts, and refunds; consultation
+billing when clinical workflows are enabled</td>
+<td>Outpatient/inpatient billing, packages, payer contracts, insurance
+claims</td>
+</tr>
+<tr class="odd">
+<td>Inventory</td>
+<td>Optional basic pharmacy stock</td>
+<td>Pharmacy, medical supplies, stores, procurement, batch and expiry
+tracking</td>
+</tr>
+<tr class="even">
+<td>Bed management</td>
+<td>Not required</td>
+<td>Beds, rooms, wards, occupancy, cleaning and transfers</td>
+</tr>
+<tr class="odd">
+<td>Admissions and discharge</td>
+<td>Not required</td>
+<td>Admission, transfer, discharge, discharge summary</td>
+</tr>
+<tr class="even">
+<td>Operating theatre</td>
+<td>Not required</td>
+<td>Theatre scheduling, procedure records, perioperative workflow</td>
+</tr>
+<tr class="odd">
+<td>Reporting</td>
+<td>Clinic operational and financial reports</td>
+<td>Hospital-wide capacity, occupancy, clinical operations, revenue and
+quality reporting</td>
+</tr>
+</tbody>
+</table>
+<h1 id="user-roles-across-the-product-roadmap">3. User Roles Across the
+Product Roadmap</h1>
+<p>The roles below describe the broader product direction, not all roles
+in the first release. The <strong>initial release has exactly four staff
+role profiles</strong>: Super Admin, Clinic / Hospital Admin (tenant
+administrator), Receptionist, and Finance. Doctor, nurse, lab, pharmacy,
+and patient-portal access are future role expansions unless the release
+scope is explicitly changed. See Sections 18–21 for the initial access
+model and the clinical-safety implications of this decision.</p>
+<h2 id="clinic-owner-organization-administrator">Clinic Owner /
+Organization Administrator</h2>
+<ul>
+<li>Manage organization profile, facilities, branches, departments,
+services, prices, and schedules.</li>
+<li>Manage staff, roles, permissions, and access policies.</li>
+<li>View operational, workflow, and financial reports.</li>
+<li>Configure notification templates and organization policies.</li>
+</ul>
+<h2 id="receptionist">Receptionist</h2>
+<ul>
+<li>Register and search patients.</li>
+<li>Book, reschedule, and cancel appointments.</li>
+<li>Register walk-in patients.</li>
+<li>Check patients in and manage waiting queues.</li>
+<li>Update demographic information within permitted limits.</li>
+</ul>
+<h2 id="doctor">Doctor</h2>
+<ul>
+<li>View appointments and waiting patients.</li>
+<li>Review medical history, allergies, medications, and prior
+visits.</li>
+<li>Record vitals, symptoms, examinations, diagnoses, and treatment
+plans.</li>
+<li>Create prescriptions, laboratory orders, referrals, and follow-up
+plans.</li>
+<li>Sign and finalize consultation notes.</li>
+</ul>
+<h2 id="nurse-clinical-assistant">Nurse / Clinical Assistant</h2>
+<ul>
+<li>Record vitals and intake information.</li>
+<li>Prepare patients for consultation.</li>
+<li>Assist with specimen collection and clinical workflows according to
+permissions.</li>
+</ul>
+<h2 id="cashier-billing-staff">Cashier / Billing Staff</h2>
+<ul>
+<li>Generate and review invoices.</li>
+<li>Record payments, partial payments, and refunds.</li>
+<li>Issue receipts and reconcile daily collections.</li>
+</ul>
+<h2 id="lab-staff">Lab Staff</h2>
+<ul>
+<li>View laboratory orders.</li>
+<li>Track specimens and test processing.</li>
+<li>Enter results and submit them for review.</li>
+</ul>
+<h2 id="pharmacist-dispensing-staff-optional">Pharmacist / Dispensing
+Staff (Optional)</h2>
+<ul>
+<li>Review prescriptions and record dispensing.</li>
+<li>Manage medication stock and expiry dates if the clinic operates a
+pharmacy.</li>
+</ul>
+<h2 id="patient">Patient</h2>
+<ul>
+<li>Register and manage profile details.</li>
+<li>Book, reschedule, and cancel appointments.</li>
+<li>Complete intake forms.</li>
+<li>View authorized prescriptions, results, invoices, and medical
+records.</li>
+<li>Receive reminders and manage follow-ups.</li>
+<li>Manage dependents where verified authorization is supported.</li>
+</ul>
+<h2 id="future-hospital-roles">Future Hospital Roles</h2>
+<ul>
+<li>Hospital administrator and department manager.</li>
+<li>Admissions and discharge staff.</li>
+<li>Ward nurse and charge nurse.</li>
+<li>Bed manager.</li>
+<li>Inpatient doctor / consultant.</li>
+<li>Operating theatre and procedure staff.</li>
+<li>Radiology and laboratory staff.</li>
+<li>Hospital pharmacist and medication administration staff.</li>
+<li>Insurance and claims officer.</li>
+<li>Medical records officer.</li>
+<li>Procurement, inventory, and facilities staff.</li>
+</ul>
+<p>Roles should be configurable through permissions rather than
+hard-coded assumptions about job titles.</p>
+<h1 id="feature-list">4. Feature List</h1>
+<h2 id="organization-facility-and-branch-management-foundation">4.1
+Organization, Facility, and Branch Management — Foundation</h2>
+<ul>
+<li>Create an organization / tenant.</li>
+<li>Support multiple facilities under one organization.</li>
+<li>Configure each facility’s type, address, timezone, contact details,
+operating hours, and local settings.</li>
+<li>Support clinic branches at launch.</li>
+<li>Model departments and service locations as reusable concepts.</li>
+<li>Support future hospitals, campuses, buildings, floors, wards, rooms,
+and beds without requiring these features in the MVP.</li>
+<li>Configure services, doctors, consultation rooms, pricing, and
+schedules by facility.</li>
+<li>Allow authorized users to work across multiple facilities.</li>
+<li>Scope records and permissions by organization and, where applicable,
+facility.</li>
+</ul>
+<h2 id="patient-management-clinic-mvp">4.2 Patient Management — Clinic
+MVP</h2>
+<ul>
+<li>Patient registration with a unique patient identifier.</li>
+<li>Demographics: name, date of birth, contact details, address, and
+emergency contact.</li>
+<li>Search by name, patient ID, phone number, or other permitted
+identifiers.</li>
+<li>Duplicate detection using configurable matching rules.</li>
+<li>Medical history, allergies, chronic conditions, and prior
+surgeries.</li>
+<li>Current medications and family history.</li>
+<li>Visit history, diagnoses, prescriptions, laboratory results, and
+uploaded documents.</li>
+<li>For every history entry, capture source (patient-reported, imported,
+or clinician-recorded), author, recorded date, verification/review
+status, and amendment history where applicable.</li>
+<li>Distinguish “not assessed”, “unknown”, “patient reports none”, and
+“clinician-confirmed none”; never treat missing data as a negative
+finding.</li>
+<li>Patient consent and privacy preferences.</li>
+<li>Upload reports, scans, referral letters, and other attachments.</li>
+<li>Merge duplicate records with a traceable audit history.</li>
+<li>Record dependents and authorized representatives where
+applicable.</li>
+</ul>
+<p><strong>Hospital-readiness requirement:</strong> Separate the
+long-lived patient identity from individual visits or encounters. A
+patient may visit multiple facilities and have many outpatient or
+inpatient encounters over time.</p>
+<h2 id="appointment-and-queue-management-clinic-mvp">4.3 Appointment and
+Queue Management — Clinic MVP</h2>
+<ul>
+<li>Doctor calendars, working hours, leave, and holidays.</li>
+<li>Appointment booking, rescheduling, and cancellation.</li>
+<li>Appointment types, durations, fees, and available slots.</li>
+<li>Walk-in registration.</li>
+<li>Check-in and queue ticket generation.</li>
+<li>Queue statuses: waiting, called, in consultation, completed, and
+missed.</li>
+<li>Waiting-room queue display and estimated waiting time.</li>
+<li>Appointment reminders through configured channels.</li>
+<li>Follow-up appointment scheduling.</li>
+<li>Configurable buffer times and prevention of double booking.</li>
+<li>Cancellation and no-show policies.</li>
+<li>Optional recurring appointments.</li>
+</ul>
+<p><strong>Hospital expansion:</strong> Extend scheduling to
+departments, procedures, diagnostic services, operating theatres,
+equipment, and inpatient-related appointments.</p>
+<h2
+id="consultation-and-electronic-medical-records-emr-clinical-release-requires-a-clinician-role">4.4
+Consultation and Electronic Medical Records (EMR) — Clinical Release
+(Requires a Clinician Role)</h2>
+<ul>
+<li>Doctor dashboard showing today’s appointments and waiting
+patients.</li>
+<li>Patient timeline and previous consultation notes.</li>
+<li>Vitals such as blood pressure, pulse, temperature, weight, and
+height.</li>
+<li>Presenting complaint and history of present illness.</li>
+<li>Clinical examination notes.</li>
+<li>Diagnosis selection and clinical coding where applicable.</li>
+<li>Treatment plan and follow-up recommendations.</li>
+<li>Prescription creation.</li>
+<li>Laboratory, imaging, and referral orders.</li>
+<li>Reusable clinical note templates.</li>
+<li>Save draft, sign, and finalize consultation.</li>
+<li>Addenda for correcting or supplementing signed notes without
+silently overwriting the original.</li>
+<li>Validation of required fields before signing.</li>
+<li>Configurable alerts for critical findings.</li>
+</ul>
+<p><strong>Release gate:</strong> The four-role administrative MVP must
+not allow a Receptionist, Finance user, or non-clinical tenant
+administrator to author, sign, or finalize clinician-only records.
+Signed clinical notes, diagnoses, prescriptions, and clinical orders
+require an authorized practitioner identity and appropriate professional
+permissions. Add a Doctor / Practitioner role before enabling these
+workflows for real clinical use. Until then, the patient registry may
+capture clearly labeled patient-reported history and upload documents,
+but must not present that information as clinician-verified advice or
+diagnosis.</p>
+<p><strong>Hospital expansion:</strong> Add inpatient progress notes,
+nursing notes, care plans, handover, multidisciplinary documentation,
+discharge summaries, and observation charts.</p>
+<h2
+id="prescription-and-medication-management-clinical-release-requires-a-clinician-role">4.5
+Prescription and Medication Management — Clinical Release (Requires a
+Clinician Role)</h2>
+<ul>
+<li>Medication catalogue with generic and brand names.</li>
+<li>Dosage, frequency, route, duration, and quantity.</li>
+<li>Allergy and interaction alerts where reliable reference data is
+available.</li>
+<li>Prescription preview, printing, and secure digital sharing.</li>
+<li>Prescription history and refill requests.</li>
+<li>Dispensing status where the clinic handles medication
+dispensing.</li>
+<li>Optional stock management, batch tracking, and expiry alerts.</li>
+</ul>
+<p><strong>Hospital expansion:</strong> Add inpatient medication orders,
+medication administration records, medication reconciliation, formulary
+controls, pharmacy verification, and unit-dose workflows where
+required.</p>
+<h2 id="billing-and-payments-clinic-mvp">4.6 Billing and Payments —
+Clinic MVP</h2>
+<ul>
+<li>Consultation fees and service price lists.</li>
+<li>Invoice generation from configured services in the administrative
+MVP; link consultation and ordered-service charges after the clinical
+module is enabled.</li>
+<li>Discounts and authorized adjustments.</li>
+<li>Cash, card, bank transfer, and supported digital payment
+methods.</li>
+<li>Partial payments and outstanding balances.</li>
+<li>Receipts and invoice history.</li>
+<li>Refund processing and tracking.</li>
+<li>Daily collection and cashier closing reports.</li>
+<li>Tax configuration and invoice numbering based on local
+requirements.</li>
+<li>Payment status verification before retrying uncertain digital
+payments.</li>
+</ul>
+<p><strong>Hospital expansion:</strong> Add inpatient billing, deposits,
+packages, payer contracts, insurance eligibility, claims,
+pre-authorization, and complex account settlement.</p>
+<h2 id="laboratory-and-diagnostic-management-later-clinic-phase">4.7
+Laboratory and Diagnostic Management — Later Clinic Phase</h2>
+<ul>
+<li>Test catalogue and pricing.</li>
+<li>Doctor-initiated test orders.</li>
+<li>Specimen collection, labeling, and tracking.</li>
+<li>Statuses for ordered, collected, processing, completed, and
+reviewed.</li>
+<li>Results entry, reference ranges, and abnormal-result flags.</li>
+<li>Result review and approval.</li>
+<li>Upload external laboratory reports.</li>
+<li>Notifications to authorized clinicians and patients according to
+clinic policy.</li>
+<li>External laboratory integrations.</li>
+</ul>
+<p><strong>Hospital expansion:</strong> Add advanced laboratory
+workflows, radiology and imaging workflows, modality integration,
+reporting worklists, and department-specific turnaround-time
+tracking.</p>
+<h2
+id="patient-portal-mobile-app-later-release-separate-patient-access-model">4.8
+Patient Portal / Mobile App — Later Release (Separate Patient Access
+Model)</h2>
+<ul>
+<li>Secure registration and login.</li>
+<li>Search clinics, branches, doctors, and services.</li>
+<li>View available appointment slots and book appointments.</li>
+<li>Reschedule or cancel appointments according to clinic policy.</li>
+<li>View upcoming and past appointments.</li>
+<li>Complete intake forms before arrival.</li>
+<li>View authorized prescriptions and medical records.</li>
+<li>Access invoices, receipts, and payment status.</li>
+<li>Receive reminders and follow-up notifications.</li>
+<li>Update personal details and request medical record copies.</li>
+<li>Manage dependents with appropriate authorization.</li>
+</ul>
+<p><strong>Release gate:</strong> Patient accounts are not one of the
+four initial staff roles. Launch the portal only after designing patient
+identity verification, account recovery, dependent/caregiver
+authorization, consent, and a patient-specific permission policy. Avoid
+reusing staff roles for patient access.</p>
+<p><strong>Hospital expansion:</strong> Add admission information,
+discharge instructions, authorized inpatient summaries, hospital bills,
+and caregiver access where appropriate.</p>
+<h2 id="clinic-administration-and-reporting-mvp">4.9 Clinic
+Administration and Reporting — MVP</h2>
+<ul>
+<li>Organization, facility, branch, department, and consultation-room
+setup.</li>
+<li>Doctor and staff management.</li>
+<li>Role-based access control.</li>
+<li>Working hours, holidays, service catalogue, and pricing.</li>
+<li>Appointment volume and no-show reports.</li>
+<li>Revenue, outstanding balance, and collection reports.</li>
+<li>Configured practitioner schedule utilization and patient
+waiting-time reports; clinical-result and consultation metrics require
+the clinical module.</li>
+<li>Audit logs for sensitive actions and record access.</li>
+<li>Export authorized reports.</li>
+<li>Facility-level settings and notification templates.</li>
+</ul>
+<p><strong>Hospital expansion:</strong> Add bed occupancy, admissions
+and discharges, length of stay, theatre utilization, departmental
+capacity, and hospital-wide operational reporting.</p>
+<h2 id="platform-security-and-operations-required-foundation">4.10
+Platform, Security, and Operations — Required Foundation</h2>
+<ul>
+<li>Multi-tenant organization and facility isolation.</li>
+<li>Role- and permission-based access to patient data.</li>
+<li>Encryption in transit and at rest.</li>
+<li>Secure authentication and session management; require multi-factor
+authentication for Super Admin and support it for other privileged
+users.</li>
+<li>Audit trails for record access, edits, prescriptions, and financial
+actions.</li>
+<li>Consent and retention policies.</li>
+<li>Automated backups and tested restoration procedures.</li>
+<li>Monitoring, alerting, structured logs, and operational
+dashboards.</li>
+<li>API authentication, rate limiting, input validation, and idempotency
+for sensitive write operations.</li>
+<li>Secure file storage and short-lived, authorized download links.</li>
+<li>Compliance configuration for applicable healthcare privacy and
+data-protection laws.</li>
+<li>Data export and migration capabilities to support future expansion
+and customer portability.</li>
+</ul>
+<h1 id="end-to-end-clinic-workflow">5. End-to-End Clinic Workflow</h1>
+<p>The full clinical workflow below applies once an authorized Doctor /
+Practitioner role is enabled. The four-role administrative MVP can
+complete patient registration, appointment booking, check-in/queue
+management, administrative history capture, invoicing, payment, and
+reporting; clinician-only documentation and prescribing remain gated
+until the clinician role is introduced.</p>
+<ol type="1">
+<li><strong>Appointment booking:</strong> Patient books online in a
+later portal release, or Receptionist books manually.</li>
+<li><strong>Registration and check-in:</strong> Find an existing patient
+or create a profile; verify details and possible duplicates.</li>
+<li><strong>Waiting queue:</strong> Assign a queue number and mark the
+patient as waiting.</li>
+<li><strong>Clinical assessment (clinical release):</strong> An
+authorized clinician reviews history, records vitals, examines the
+patient, and documents findings.</li>
+<li><strong>Clinical orders (clinical release):</strong> Clinician
+creates prescriptions, lab tests, imaging orders, referrals, and
+follow-up recommendations.</li>
+<li><strong>Medication workflow:</strong> Provide the prescription and
+record dispensing if the clinic manages it.</li>
+<li><strong>Diagnostics workflow:</strong> Collect samples, process
+tests, enter results, and arrange clinician review.</li>
+<li><strong>Billing and payment:</strong> Generate an invoice from
+configured billable services, collect payment, and issue a receipt.</li>
+<li><strong>Visit and follow-up:</strong> Finalize the clinical record
+when authorized, track outstanding orders separately, schedule
+follow-up, and send permitted reminders.</li>
+</ol>
+<h2 id="application-level-patient-flow">5.1 Application-Level Patient
+Flow</h2>
+<pre class="mermaid"><code>flowchart TD
+    A[Patient contacts clinic or uses future portal] --&gt; B[Search existing patient]
+    B --&gt; C{Patient found?}
+    C -- No --&gt; D[Register patient and check possible duplicates]
+    C -- Yes --&gt; E[Verify identity and contact details]
+    D --&gt; F[Book appointment or register walk-in]
+    E --&gt; F
+    F --&gt; G[Check in and add to queue]
+    G --&gt; H[Administrative MVP: update queue and billing items]
+    H --&gt; I{Clinician role enabled?}
+    I -- No --&gt; J[Stop before clinician-only documentation or prescribing]
+    I -- Yes --&gt; K[Authorized clinician reviews patient history]
+    K --&gt; L[Record observations, assessment, diagnosis, and plan]
+    L --&gt; M[Create prescription or diagnostic orders if needed]
+    M --&gt; N[Review results and follow-up tasks as applicable]
+    J --&gt; O[Invoice, collect or reconcile payment, issue receipt]
+    N --&gt; O
+    O --&gt; P[Close administrative workflow and track open clinical tasks]</code></pre>
+<h2 id="important-workflow-rule">Important Workflow Rule</h2>
+<p>Clinical completion and financial settlement must be separate states.
+A patient may finish a consultation while an invoice remains
+outstanding. A consultation involving pending lab results may remain
+clinically pending even if the consultation fee is paid.</p>
+<h1 id="detailed-user-flows">6. Detailed User Flows</h1>
+<h2 id="new-patient-books-an-appointment">6.1 New Patient Books an
+Appointment</h2>
+<ol type="1">
+<li>Patient selects a facility, doctor, service, and date.</li>
+<li>System retrieves available slots based on schedules, existing
+bookings, appointment duration, and buffer times.</li>
+<li>Patient logs in or provides registration details.</li>
+<li>System checks for a potential duplicate patient record.</li>
+<li>Patient confirms the appointment and accepts applicable consent
+terms.</li>
+<li>System reserves the slot and creates the appointment.</li>
+<li>Confirmation and reminders are sent through configured
+channels.</li>
+</ol>
+<p><strong>Exception handling</strong> - If the slot is taken during
+booking, refresh availability and ask the patient to select another
+slot. - If payment is required to confirm the booking, use a
+payment-pending state with an expiry policy. - If the patient cancels,
+release the slot according to clinic policy. - Use database constraints
+or transactional locking to prevent double booking.</p>
+<h2 id="receptionist-handles-a-walk-in">6.2 Receptionist Handles a
+Walk-In</h2>
+<ol type="1">
+<li>Search for the patient using permitted identifiers.</li>
+<li>If no record exists, create a profile and collect required
+information.</li>
+<li>Select the doctor or service and create a walk-in appointment or
+visit.</li>
+<li>Check the patient in and generate a queue number.</li>
+<li>Display the patient in the doctor’s waiting list.</li>
+<li>When the doctor calls the patient, update the queue to in
+consultation.</li>
+</ol>
+<h2 id="doctor-consultation">6.3 Doctor Consultation</h2>
+<ol type="1">
+<li>Doctor opens the next patient from the queue.</li>
+<li>System displays relevant allergies, current medications, prior
+diagnoses, and visit history.</li>
+<li>Nurse or doctor records vitals.</li>
+<li>Doctor enters complaints, examination findings, diagnosis, and
+clinical notes.</li>
+<li>Doctor creates prescriptions and any lab, imaging, or referral
+orders.</li>
+<li>Doctor reviews and signs the consultation.</li>
+<li>System creates required billable service items and schedules
+follow-up if needed.</li>
+</ol>
+<p><strong>Exception handling</strong> - Draft notes can be saved
+without completing the visit. - Signed notes should not be silently
+overwritten; corrections should be traceable. - Missing mandatory
+information should trigger validation. - Critical findings should
+trigger a configured clinical escalation workflow.</p>
+<h2 id="laboratory-test-and-result">6.4 Laboratory Test and Result</h2>
+<ol type="1">
+<li>Doctor orders a test.</li>
+<li>System records the order and associated charges, if applicable.</li>
+<li>Lab staff collect and label the specimen.</li>
+<li>Lab staff enter results or receive them from an integrated lab
+system.</li>
+<li>Authorized staff review and validate results.</li>
+<li>Doctor receives a result notification and reviews clinical
+significance.</li>
+<li>Patient is informed according to clinic policy and required
+doctor-review rules.</li>
+</ol>
+<h2 id="billing-and-payment">6.5 Billing and Payment</h2>
+<ol type="1">
+<li>System assembles billable consultation and service items.</li>
+<li>Cashier reviews the invoice, discounts, and taxes.</li>
+<li>Patient pays through an accepted payment method.</li>
+<li>System records the payment against the invoice and generates a
+receipt.</li>
+<li>For partial payment, the remaining balance stays outstanding.</li>
+<li>For failed or uncertain digital payments, the system verifies the
+provider’s payment status before retrying or marking the payment
+failed.</li>
+<li>Refunds are recorded as separate, auditable transactions linked to
+the original payment.</li>
+</ol>
+<h1 id="status-models">7. Status Models</h1>
+<p>Do not use a single status field for the entire patient journey.
+Appointment, consultation, laboratory, invoice, and payment states
+should be independent.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Entity</th>
+<th>Suggested statuses</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Appointment</td>
+<td>Booked, Confirmed, Checked-in, In-progress, Completed, Cancelled,
+No-show</td>
+</tr>
+<tr class="even">
+<td>Encounter (care episode)</td>
+<td>Planned, In-progress, Completed, Cancelled (where applicable)</td>
+</tr>
+<tr class="odd">
+<td>Clinical note</td>
+<td>Draft, Signed, Amended (original preserved), Entered-in-error
+(audited)</td>
+</tr>
+<tr class="even">
+<td>Prescription</td>
+<td>Draft, Signed, Dispensed, Partially dispensed, Cancelled</td>
+</tr>
+<tr class="odd">
+<td>Lab Order</td>
+<td>Ordered, Collected, Processing, Result-ready, Reviewed,
+Cancelled</td>
+</tr>
+<tr class="even">
+<td>Invoice</td>
+<td>Draft, Issued, Partially paid, Paid, Void</td>
+</tr>
+<tr class="odd">
+<td>Payment</td>
+<td>Pending, Processing, Succeeded, Failed, Refund-pending,
+Refunded</td>
+</tr>
+<tr class="even">
+<td>Follow-up</td>
+<td>Recommended, Scheduled, Completed, Cancelled</td>
+</tr>
+</tbody>
+</table>
+<p>A lab result being ready does not necessarily mean the doctor has
+reviewed it. A paid invoice does not necessarily mean the visit is
+clinically complete.</p>
+<h1 id="main-application-screens">8. Main Application Screens</h1>
+<ol type="1">
+<li><strong>Clinic Dashboard</strong>
+<ul>
+<li>Initial release: appointments, waiting patients, payment summaries,
+and administrative alerts. Clinical-result cards appear only in releases
+with clinical/diagnostic permissions.</li>
+</ul></li>
+<li><strong>Patient Profile</strong>
+<ul>
+<li>Demographics, medical history, allergies, visits, prescriptions, lab
+reports, invoices, and a unified timeline.</li>
+</ul></li>
+<li><strong>Appointment Calendar and Queue</strong>
+<ul>
+<li>Daily and weekly schedules, doctor availability, walk-ins, queue
+ordering, and check-in actions.</li>
+</ul></li>
+<li><strong>Consultation Workspace (Clinical Release)</strong>
+<ul>
+<li>Patient history, vitals, clinical notes, diagnosis, prescription
+builder, and lab orders; requires authorized clinician permissions.</li>
+</ul></li>
+<li><strong>Billing and Reports</strong>
+<ul>
+<li>Invoice details, payment collection, outstanding balances, refunds,
+and financial summaries.</li>
+</ul></li>
+<li><strong>Administration</strong>
+<ul>
+<li>Organization, facilities, departments, users, permissions, doctors,
+schedules, services, prices, and settings.</li>
+</ul></li>
+<li><strong>Patient Portal (Later Release)</strong>
+<ul>
+<li>Booking, appointment history, authorized medical records,
+prescriptions, invoices, and profile settings, after patient identity
+and access controls are implemented.</li>
+</ul></li>
+</ol>
+<h1 id="hospital-expansion-roadmap">9. Hospital Expansion Roadmap</h1>
+<p>Hospital functionality should be added as new modules that reuse the
+clinic platform’s identity, access control, clinical record, order,
+billing, notification, and audit foundations.</p>
+<h2
+id="phase-1a-administrative-clinic-mvp-four-initial-staff-roles">Phase
+1A — Administrative Clinic MVP (Four Initial Staff Roles)</h2>
+<ul>
+<li>Tenant onboarding, facilities, users, roles, and permissions.</li>
+<li>Patient registration, duplicate detection, patient-reported history,
+allergies reported by the patient, consent metadata, and document
+attachments.</li>
+<li>Appointment calendar, walk-ins, check-in, and queue management.</li>
+<li>Service catalogue, prices, invoices, payments, receipts, refunds
+with permissions, and basic reconciliation.</li>
+<li>Administrative and financial reports.</li>
+<li>Tenant isolation, audit logging, backups, monitoring, and security
+foundations.</li>
+<li>No clinician-only diagnoses, signed consultation notes,
+prescriptions, or clinical orders until an authorized clinician role is
+implemented.</li>
+</ul>
+<h2
+id="phase-1b-clinical-capability-gate-before-real-clinical-use">Phase 1B
+— Clinical Capability Gate (Before Real Clinical Use)</h2>
+<ul>
+<li>Add Doctor / Practitioner role and clinician-specific
+permissions.</li>
+<li>Enable encounter notes, vitals/observations, diagnoses,
+prescriptions, and clinician sign-off.</li>
+<li>Implement attribution, history provenance, amendment/addendum
+workflows, and clinical audit trails.</li>
+<li>Validate clinical workflows with qualified clinical stakeholders
+before production use.</li>
+</ul>
+<h2 id="phase-2-patient-access-and-diagnostics">Phase 2 — Patient Access
+and Diagnostics</h2>
+<ul>
+<li>Patient portal / mobile app with a separate patient identity and
+authorization model.</li>
+<li>Reminders and notifications with consent and delivery-status
+tracking.</li>
+<li>Lab orders and results with clinician review.</li>
+<li>Pharmacy inventory when required.</li>
+<li>Advanced payment handling.</li>
+<li>Follow-up automation.</li>
+<li>Branch-level reporting.</li>
+<li>External lab integrations.</li>
+<li>Organization-wide patient records across authorized branches.</li>
+</ul>
+<h2 id="phase-3-hospital-core">Phase 3 — Hospital Core</h2>
+<ul>
+<li>Hospital facility hierarchy: campus, building, floor, department,
+ward, room, and bed.</li>
+<li>Admissions, transfers, and discharge (ADT).</li>
+<li>Bed availability, reservations, occupancy, and cleaning status.</li>
+<li>Inpatient encounters linked to the same patient record as outpatient
+visits.</li>
+<li>Nursing assessments, observations, care plans, and shift
+handover.</li>
+<li>Inpatient medication orders and medication administration
+records.</li>
+<li>Discharge summaries, instructions, and follow-up plans.</li>
+<li>Inpatient billing, deposits, and payer workflows.</li>
+<li>Hospital-specific operational dashboards.</li>
+</ul>
+<h2 id="phase-4-advanced-hospital-operations">Phase 4 — Advanced
+Hospital Operations</h2>
+<ul>
+<li>Operating theatre and procedure scheduling.</li>
+<li>Radiology and advanced diagnostic workflows.</li>
+<li>Emergency department workflows and triage.</li>
+<li>Blood bank, ICU, and other specialist modules if required.</li>
+<li>Procurement, stores, and medical inventory.</li>
+<li>Insurance eligibility, pre-authorization, and claims.</li>
+<li>Interoperability with external healthcare systems.</li>
+<li>Advanced clinical quality and capacity analytics.</li>
+</ul>
+<p>The exact order should be validated with target customers. Hospital
+modules can be complex and may require specialist clinical, operational,
+and regulatory input.</p>
+<h1 id="hospital-ready-technical-architecture">10. Hospital-Ready
+Technical Architecture</h1>
+<h2 id="recommended-approach">Recommended Approach</h2>
+<p>Use a <strong>modular monolith for the initial release</strong>, with
+explicit domain boundaries and stable internal interfaces. Do not split
+everything into microservices before actual scale or organizational
+needs justify it.</p>
+<h2 id="client-applications">Client Applications</h2>
+<ul>
+<li><strong>Initial:</strong> Platform Admin Console and clinic
+administration/reception/finance web workspaces.</li>
+<li><strong>Clinical release:</strong> Doctor and nursing workspaces
+after clinician roles and clinical safeguards are delivered.</li>
+<li><strong>Patient release:</strong> Patient mobile app or responsive
+portal after patient identity and authorization are delivered.</li>
+<li><strong>Hospital expansion:</strong> Workspaces for admissions,
+wards, pharmacy, diagnostics, and other departments.</li>
+</ul>
+<h2 id="api-and-security-layer">API and Security Layer</h2>
+<ul>
+<li>Authentication and authorization.</li>
+<li>Tenant and facility resolution.</li>
+<li>Role-based and context-aware access control.</li>
+<li>Input validation, rate limiting, and API versioning.</li>
+<li>OpenAPI documentation.</li>
+<li>Audit context propagation.</li>
+</ul>
+<h2 id="domain-modules">Domain Modules</h2>
+<ul>
+<li>Organization and Facility Management.</li>
+<li>Identity, Users, Roles, and Permissions.</li>
+<li>Patient Registry.</li>
+<li>Scheduling and Appointments.</li>
+<li>Encounters and Clinical Documentation.</li>
+<li>Diagnoses and Clinical Terminology.</li>
+<li>Orders and Results.</li>
+<li>Medication and Prescription Management.</li>
+<li>Billing, Payments, and Payers.</li>
+<li>Inventory and Pharmacy.</li>
+<li>Notifications and Background Jobs.</li>
+<li>Reporting and Audit.</li>
+<li>Future Admission, Transfer, Discharge, Bed Management, Nursing,
+Theatre, and Emergency modules.</li>
+</ul>
+<h2 id="data-and-infrastructure">Data and Infrastructure</h2>
+<ul>
+<li><strong>Backend:</strong> NestJS and TypeScript, REST API, and
+OpenAPI.</li>
+<li><strong>Database:</strong> PostgreSQL with transactions,
+constraints, tenant-aware access, and appropriate indexes.</li>
+<li><strong>Web:</strong> React or Next.js.</li>
+<li><strong>Mobile:</strong> React Native or Flutter.</li>
+<li><strong>Cache and jobs:</strong> Redis and a background job queue
+where justified.</li>
+<li><strong>File storage:</strong> Private object storage for clinical
+documents and reports.</li>
+<li><strong>Observability:</strong> Structured logs, metrics, traces,
+audit trails, and operational alerts.</li>
+</ul>
+<h2 id="architecture-rules-for-future-expansion">Architecture Rules for
+Future Expansion</h2>
+<ol type="1">
+<li><strong>Separate patient identity from encounters.</strong> A
+patient can have multiple outpatient and inpatient encounters over many
+years.</li>
+<li><strong>Use a generalized facility model.</strong> A clinic branch
+and a hospital ward are not the same thing, but both can belong to a
+facility hierarchy.</li>
+<li><strong>Keep appointments separate from encounters.</strong> An
+appointment may be cancelled or missed without creating a clinical
+encounter; an emergency visit may begin without an appointment.</li>
+<li><strong>Keep clinical and financial lifecycles separate.</strong> A
+signed encounter, a completed order, and a paid invoice are independent
+facts.</li>
+<li><strong>Use explicit domain ownership.</strong> Each module owns its
+business rules and writes to its own tables through defined application
+interfaces.</li>
+<li><strong>Avoid over-generalization.</strong> Do not add dozens of
+unused hospital fields to clinic entities. Add hospital-specific
+entities and modules when needed.</li>
+<li><strong>Preserve auditability.</strong> Clinical notes, medication
+orders, results, permissions, and financial transactions require
+traceable changes.</li>
+<li><strong>Design for interoperability.</strong> Use stable
+identifiers, versioned APIs, and standards-based mappings where
+appropriate. Evaluate HL7 FHIR and other relevant standards for
+integrations instead of assuming every integration will use a
+proprietary format.</li>
+<li><strong>Plan for data migration.</strong> Support controlled
+exports, imports, deduplication, validation, and reconciliation.</li>
+<li><strong>Test tenant and facility isolation.</strong> Users must not
+gain access to records from other organizations or facilities through
+guessed identifiers or manipulated requests.</li>
+</ol>
+<h1 id="core-data-model">11. Core Data Model</h1>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Entity</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Organization</td>
+<td>SaaS customer or healthcare group</td>
+</tr>
+<tr class="even">
+<td>Facility</td>
+<td>Clinic or hospital facility</td>
+</tr>
+<tr class="odd">
+<td>Location</td>
+<td>Hierarchical physical location within a facility; future examples
+include building, floor, ward, room, and bed</td>
+</tr>
+<tr class="even">
+<td>Department</td>
+<td>Clinical or operational department</td>
+</tr>
+<tr class="odd">
+<td>User, Role, Permission</td>
+<td>Staff accounts and access control</td>
+</tr>
+<tr class="even">
+<td>PractitionerProfile</td>
+<td>Qualifications, specialties, and professional details</td>
+</tr>
+<tr class="odd">
+<td>Patient</td>
+<td>Long-lived patient identity and demographics</td>
+</tr>
+<tr class="even">
+<td>PatientIdentifier</td>
+<td>Medical record number and other identifiers, scoped by issuing
+authority</td>
+</tr>
+<tr class="odd">
+<td>PatientConsent</td>
+<td>Consent records and preferences</td>
+</tr>
+<tr class="even">
+<td>PatientHistoryEntry</td>
+<td>Patient-reported or imported medical history with source, author,
+recorded date, and review status</td>
+</tr>
+<tr class="odd">
+<td>PatientCondition / Problem</td>
+<td>Longitudinal conditions or problems with status and relevant
+dates</td>
+</tr>
+<tr class="even">
+<td>AllergyIntolerance</td>
+<td>Allergy/substance, reaction, severity, source, and verification
+state</td>
+</tr>
+<tr class="odd">
+<td>MedicationStatement</td>
+<td>Medication reported as currently or previously used, distinct from a
+prescription order</td>
+</tr>
+<tr class="even">
+<td>FamilyHistoryEntry</td>
+<td>Relevant family medical history and source</td>
+</tr>
+<tr class="odd">
+<td>Appointment</td>
+<td>Planned booking</td>
+</tr>
+<tr class="even">
+<td>Encounter</td>
+<td>Actual outpatient, emergency, or inpatient care episode</td>
+</tr>
+<tr class="odd">
+<td>Vital / Observation</td>
+<td>Measurements and clinical observations, including units, effective
+time, source, and author where appropriate</td>
+</tr>
+<tr class="even">
+<td>ClinicalNote</td>
+<td>Consultation or clinical documentation with
+draft/signature/amendment history</td>
+</tr>
+<tr class="odd">
+<td>Diagnosis</td>
+<td>Diagnoses associated with an encounter</td>
+</tr>
+<tr class="even">
+<td>ServiceOrder</td>
+<td>Order for a clinical service, test, imaging, or procedure</td>
+</tr>
+<tr class="odd">
+<td>LabOrder, LabResult</td>
+<td>Laboratory requests and results</td>
+</tr>
+<tr class="even">
+<td>Prescription, PrescriptionItem</td>
+<td>Medication orders</td>
+</tr>
+<tr class="odd">
+<td>MedicationAdministration</td>
+<td>Future record of medication actually administered</td>
+</tr>
+<tr class="even">
+<td>Admission</td>
+<td>Future inpatient admission lifecycle</td>
+</tr>
+<tr class="odd">
+<td>BedAssignment</td>
+<td>Future patient-to-bed assignment and transfer history</td>
+</tr>
+<tr class="even">
+<td>Invoice, InvoiceItem</td>
+<td>Billable services</td>
+</tr>
+<tr class="odd">
+<td>Payment, Refund</td>
+<td>Financial transactions</td>
+</tr>
+<tr class="even">
+<td>Attachment</td>
+<td>Reports and medical documents</td>
+</tr>
+<tr class="odd">
+<td>AuditLog</td>
+<td>Traceable record of sensitive actions</td>
+</tr>
+</tbody>
+</table>
+<h2 id="core-relationships">Core Relationships</h2>
+<ul>
+<li>An organization can have multiple facilities.</li>
+<li>A facility can contain departments and hierarchical locations.</li>
+<li>A patient has a long-lived identity and may have many appointments
+and encounters.</li>
+<li>An encounter belongs to a patient and is associated with a facility
+and care context.</li>
+<li>An encounter can have multiple notes, observations, diagnoses,
+orders, and prescriptions.</li>
+<li>An inpatient admission can link to one or more encounters and bed
+assignments as defined by the future admission model.</li>
+<li>An invoice can contain multiple items and receive multiple
+payments.</li>
+<li>Sensitive clinical and financial records are restricted by
+organization, facility, and role according to policy.</li>
+</ul>
+<h1 id="critical-business-and-engineering-requirements">12. Critical
+Business and Engineering Requirements</h1>
+<h2 id="multi-tenancy-and-facility-access">Multi-Tenancy and Facility
+Access</h2>
+<ul>
+<li>Every organization-owned record must be associated with the
+appropriate organization.</li>
+<li>Enforce tenant isolation in the application and, where appropriate,
+with database-level controls.</li>
+<li>Never trust a tenant or facility identifier supplied by a client
+without validating it against the authenticated user’s permissions.</li>
+<li>Add automated tests proving users cannot access another tenant’s
+records.</li>
+<li>Support users assigned to one or more facilities through explicit
+grants.</li>
+</ul>
+<h2 id="appointment-concurrency">Appointment Concurrency</h2>
+<ul>
+<li>Prevent two patients from booking the same doctor and time
+slot.</li>
+<li>Use transactional constraints or locking to handle simultaneous
+booking attempts.</li>
+<li>Make booking and payment callbacks idempotent.</li>
+</ul>
+<h2 id="clinical-record-integrity">Clinical Record Integrity</h2>
+<ul>
+<li>Preserve authorship and timestamps.</li>
+<li>Keep a traceable history of amendments to signed notes.</li>
+<li>Record who created, reviewed, signed, or amended critical clinical
+data.</li>
+<li>Apply clinical escalation and result-review workflows appropriate to
+the care setting.</li>
+</ul>
+<h2 id="payment-integrity">Payment Integrity</h2>
+<ul>
+<li>Separate invoices, payments, and refunds.</li>
+<li>Support partial payments and payment allocation.</li>
+<li>Verify uncertain gateway outcomes before retrying.</li>
+<li>Use idempotency keys for payment-related operations and
+callbacks.</li>
+</ul>
+<h2 id="security-and-privacy">Security and Privacy</h2>
+<ul>
+<li>Apply least-privilege access and enforce authorization on every
+backend request.</li>
+<li>Require multi-factor authentication for Super Admin; strongly
+recommend it for tenant administrators and privileged finance
+actions.</li>
+<li>Encrypt data in transit and at rest; define key ownership, rotation,
+and secret-management practices.</li>
+<li>Protect document downloads and sensitive exports with short-lived
+authorization checks.</li>
+<li>Audit access to sensitive records, not just modifications; protect
+audit logs from tampering.</li>
+<li>Define retention, deletion, consent, patient-access, correction, and
+disclosure policies with local legal review.</li>
+<li>Define secure account recovery, session expiry, logout/revocation,
+invitation expiry, and staff offboarding flows.</li>
+<li>Implement rate limiting, abuse detection, dependency/security
+scanning, and incident-response procedures.</li>
+<li>Avoid sensitive patient data in logs, analytics, URLs, notification
+previews, and support tooling.</li>
+<li>Conduct security testing, including tenant-isolation tests, before
+onboarding external customers.</li>
+</ul>
+<h2 id="reliability-and-operations">Reliability and Operations</h2>
+<ul>
+<li>Back up data and regularly test restoration; document backup
+retention and access controls.</li>
+<li>Define target Recovery Point Objective (RPO) and Recovery Time
+Objective (RTO) before production launch.</li>
+<li>Monitor background jobs, failed notifications, payment callbacks,
+and scheduled reports.</li>
+<li>Use retries with backoff, idempotency, and dead-letter handling
+where appropriate.</li>
+<li>Make external integrations observable and resilient; provide safe
+degraded behavior when a provider is unavailable.</li>
+<li>Maintain documented schema migration, rollback, and
+disaster-recovery procedures.</li>
+<li>Establish environment separation for development, testing, staging,
+and production; do not use real patient data in lower environments
+unless formally authorized and protected.</li>
+<li>Define tenant provisioning, suspension, data export, offboarding,
+and deletion workflows.</li>
+</ul>
+<h1 id="non-functional-requirements">13. Non-Functional
+Requirements</h1>
+<ul>
+<li><strong>Security:</strong> Strong authentication, least-privilege
+authorization, tenant isolation, encryption, and auditing.</li>
+<li><strong>Reliability:</strong> Transactional integrity for
+appointments, clinical records, and financial operations.</li>
+<li><strong>Performance:</strong> Responsive patient search, appointment
+calendars, and clinical record access under expected workload.</li>
+<li><strong>Availability:</strong> Define service-level objectives based
+on clinic needs and hosting budget.</li>
+<li><strong>Scalability:</strong> Scale application instances, database
+resources, and background processing as usage grows.</li>
+<li><strong>Maintainability:</strong> Modular domain boundaries,
+automated tests, API contracts, and clear ownership.</li>
+<li><strong>Accessibility:</strong> Usable interfaces for diverse staff
+and patients, including keyboard navigation and readable contrast.</li>
+<li><strong>Localization:</strong> Configurable language, timezone, date
+format, currency, and regional requirements.</li>
+<li><strong>Interoperability:</strong> Versioned APIs and
+standards-based mappings for future integrations.</li>
+<li><strong>Portability:</strong> Export and migration tooling to reduce
+vendor lock-in.</li>
+</ul>
+<h1 id="initial-delivery-backlog">14. Initial Delivery Backlog</h1>
+<h2 id="epic-1-tenant-and-facility-foundation">Epic 1 — Tenant and
+Facility Foundation</h2>
+<ul>
+<li>Create organization and facility.</li>
+<li>Configure organization and facility settings.</li>
+<li>Invite users and assign roles.</li>
+<li>Enforce tenant and facility access.</li>
+<li>Record audit events.</li>
+</ul>
+<h2 id="epic-2-patient-registry">Epic 2 — Patient Registry</h2>
+<ul>
+<li>Register and search patients.</li>
+<li>Detect possible duplicates.</li>
+<li>Edit demographics with appropriate permissions.</li>
+<li>Record consent and emergency contact.</li>
+<li>View patient history and documents.</li>
+</ul>
+<h2 id="epic-3-appointments-and-queue">Epic 3 — Appointments and
+Queue</h2>
+<ul>
+<li>Configure practitioner availability.</li>
+<li>Search available slots.</li>
+<li>Create, reschedule, and cancel appointments.</li>
+<li>Check in patients and generate queue tickets.</li>
+<li>Prevent concurrent double booking.</li>
+</ul>
+<h2
+id="epic-4-clinical-encounter-and-emr-requires-clinician-role-phase-1b">Epic
+4 — Clinical Encounter and EMR (Requires Clinician Role; Phase 1B)</h2>
+<ul>
+<li>Add Doctor / Practitioner identity and role permissions.</li>
+<li>Open an encounter from a check-in or walk-in.</li>
+<li>Record vitals, notes, and diagnoses with author and source
+attribution.</li>
+<li>Create, sign, and amend clinical documentation without overwriting
+signed content.</li>
+<li>View prior encounters and allergies according to clinical
+permissions.</li>
+<li>Create follow-up recommendations.</li>
+</ul>
+<h2 id="epic-5-prescriptions-and-orders-requires-clinician-role">Epic 5
+— Prescriptions and Orders (Requires Clinician Role)</h2>
+<ul>
+<li>Search medication catalogue.</li>
+<li>Create and sign prescriptions.</li>
+<li>Create laboratory and referral orders.</li>
+<li>Track order status and review results when diagnostics are
+introduced.</li>
+</ul>
+<h2 id="epic-6-billing-and-payments">Epic 6 — Billing and Payments</h2>
+<ul>
+<li>Configure service pricing.</li>
+<li>Generate invoices and receipts.</li>
+<li>Record full and partial payments.</li>
+<li>Handle payment failures and refunds.</li>
+<li>Produce daily collection reports.</li>
+</ul>
+<h2 id="epic-7-patient-portal-later-release">Epic 7 — Patient Portal
+(Later Release)</h2>
+<ul>
+<li>Define patient identity, identity verification, recovery, and
+consent model.</li>
+<li>Secure patient authentication and dependent/caregiver
+permissions.</li>
+<li>Book and manage appointments.</li>
+<li>View authorized records and prescriptions after clinical access
+rules are established.</li>
+<li>Access invoices and receipts.</li>
+<li>Receive reminders and notifications with preferences and delivery
+tracking.</li>
+</ul>
+<h2 id="epic-8-reporting-and-operations">Epic 8 — Reporting and
+Operations</h2>
+<ul>
+<li>Appointment and no-show reports.</li>
+<li>Revenue and outstanding-balance reports.</li>
+<li>Audit search for authorized users.</li>
+<li>Backups, monitoring, alerting, and operational runbooks.</li>
+</ul>
+<h2 id="epic-9-hospital-expansion-future">Epic 9 — Hospital Expansion
+(Future)</h2>
+<ul>
+<li>Facility location hierarchy.</li>
+<li>Admissions, transfers, and discharge.</li>
+<li>Ward and bed management.</li>
+<li>Inpatient encounters and nursing documentation.</li>
+<li>Medication administration.</li>
+<li>Inpatient billing and hospital operational reports.</li>
+</ul>
+<h1 id="decisions-to-confirm-before-detailed-implementation">15.
+Decisions to Confirm Before Detailed Implementation</h1>
+<ol type="1">
+<li><strong>Initial clinic type:</strong> General practice, dental,
+specialist, or multi-specialty.</li>
+<li><strong>Initial market:</strong> Malaysia, Saudi Arabia, or
+multi-country.</li>
+<li><strong>Initial clients:</strong> Clinic web only, web plus patient
+mobile app, or web plus mobile plus API.</li>
+<li><strong>Business model:</strong> Multi-tenant SaaS, single-clinic
+deployment, or enterprise clinic chain.</li>
+<li><strong>First integrations:</strong> Payment gateway, notification
+provider, laboratory, pharmacy, or external electronic medical
+record.</li>
+<li><strong>Hospital expansion priorities:</strong> General hospital,
+specialist hospital, or selected hospital modules first.</li>
+</ol>
+<h1 id="recommended-product-direction">16. Recommended Product
+Direction</h1>
+<p>Launch a general-practice <strong>administrative clinic MVP</strong>
+with tenant onboarding, patient registration and patient-reported
+history, appointments, queue management, basic billing, finance,
+role-based access, and audit logging. Add the Doctor / Practitioner role
+before enabling clinician-authored or signed encounter records,
+diagnoses, prescriptions, and clinical orders. Add patient portal
+accounts in a later release.</p>
+<p>Build the underlying model around <strong>organizations, facilities,
+patients, appointments, encounters, clinical history, orders, and
+financial transactions</strong>. This gives the product a credible path
+from clinics to hospitals while avoiding the cost and complexity of
+implementing inpatient, ward, bed, theatre, and emergency workflows
+before customers need them.</p>
+<p>Healthcare workflows and data handling must be validated with
+clinical stakeholders and configured for applicable local regulations
+before production deployment.</p>
+<h1 id="uiux-and-visual-design-specifications">17. UI/UX and Visual
+Design Specifications</h1>
+<h2 id="design-direction">17.1 Design Direction</h2>
+<p>Use a <strong>modern, minimal, calm, and professional healthcare SaaS
+design</strong>. The interface should feel trustworthy and easy to scan
+during busy clinic operations. Prioritize clarity, accessibility, and
+speed over decoration.</p>
+<p>Design principles: - <strong>Minimal by default:</strong> Show the
+information needed for the current task; reveal secondary details
+progressively. - <strong>Clinical clarity:</strong> Make patient
+identity, allergies, critical alerts, current encounter, and next action
+easy to identify. - <strong>Low cognitive load:</strong> Use consistent
+layouts and predictable navigation. - <strong>Action-oriented:</strong>
+Primary actions should be visible and named clearly. -
+<strong>Accessible:</strong> Do not rely on color alone to convey status
+or urgency. - <strong>Responsive:</strong> Support desktop workstations,
+tablets used by clinicians, and mobile patient experiences. -
+<strong>Extensible:</strong> Reuse the same design system as the product
+grows from clinics into hospital departments.</p>
+<p>Avoid overly decorative gradients, excessive shadows, dense
+dashboards, unnecessary animations, and dark backgrounds as the default.
+Use color sparingly for emphasis and status.</p>
+<h2 id="visual-style">17.2 Visual Style</h2>
+<p><strong>Recommended aesthetic:</strong> Light, clean, spacious,
+neutral surfaces with a restrained teal or blue-green accent.</p>
+<p>Suggested starting tokens (adjust after usability testing): - App
+background: <code>#F7F9FC</code> - Main surface: <code>#FFFFFF</code> -
+Primary text: <code>#17212F</code> - Secondary text:
+<code>#64748B</code> - Borders and dividers: <code>#E2E8F0</code> -
+Primary action / accent: <code>#0F766E</code> - Accent hover:
+<code>#115E59</code> - Informational: <code>#2563EB</code> - Success:
+<code>#15803D</code> - Warning: <code>#B45309</code> - Error / critical:
+<code>#B91C1C</code> - Focus ring: <code>#0F766E</code></p>
+<p>These are initial design tokens, not fixed brand requirements. Verify
+text and control contrast against WCAG 2.2 AA guidance before
+implementation. For high-risk clinical alerts, pair color with an icon,
+text label, and clear action.</p>
+<h2 id="typography">17.3 Typography</h2>
+<ul>
+<li>Use a highly legible sans-serif such as Inter, with a suitable
+system-font fallback.</li>
+<li>Use a consistent type scale rather than many arbitrary sizes.</li>
+<li>Page title: approximately 24–28 px.</li>
+<li>Section heading: approximately 18–20 px.</li>
+<li>Body text: approximately 14–16 px.</li>
+<li>Secondary metadata: approximately 12–14 px, while remaining
+comfortably readable.</li>
+<li>Use medium or semibold weights for hierarchy; reserve bold for
+important labels and values.</li>
+<li>Avoid long passages in all caps and avoid very light font
+weights.</li>
+<li>Use tabular numerals for values that users compare, such as amounts,
+dates, and measurements, where supported.</li>
+</ul>
+<h2 id="spacing-layout-and-surfaces">17.4 Spacing, Layout, and
+Surfaces</h2>
+<ul>
+<li>Use a consistent 4 px base spacing scale, with common spacing
+increments of 8, 12, 16, 24, and 32 px.</li>
+<li>Use a 12-column grid for wide desktop layouts where useful.</li>
+<li>Keep primary content within a comfortable reading width; use wider
+layouts for clinical tables and calendars.</li>
+<li>Use cards for distinct tasks or summaries, not to wrap every
+field.</li>
+<li>Prefer subtle 1 px borders and restrained shadows.</li>
+<li>Use consistent corner radii: around 8 px for inputs and small
+controls, and 12–16 px for larger panels.</li>
+<li>Maintain clear separation between navigation, page header, primary
+content, and contextual side panels.</li>
+<li>Keep important actions in consistent locations.</li>
+<li>Use sticky headers or action bars only when they help users complete
+long clinical forms.</li>
+</ul>
+<h2 id="application-shell-and-navigation">17.5 Application Shell and
+Navigation</h2>
+<p>For clinic staff desktop applications: - <strong>Left navigation
+sidebar:</strong> Dashboard, Patients, Appointments, Queue, Encounters,
+Prescriptions, Lab Orders, Billing, Reports, and Settings. - <strong>Top
+bar:</strong> Current facility selector, global patient search,
+notifications, help, and user menu. - <strong>Page header:</strong> Page
+title, concise supporting context, and one prominent primary action
+where applicable. - <strong>Main workspace:</strong> Task-focused
+content with consistent alignment and responsive behavior. -
+<strong>Context panel:</strong> Optional patient summary or encounter
+details when relevant.</p>
+<p>Navigation requirements: - Highlight the active section. - Support
+collapsible navigation on smaller screens. - Do not expose modules a
+user cannot access. - Keep global patient search available to authorized
+clinical staff. - Make the active organization and facility visible to
+users who can switch between facilities. - Warn users before switching
+context if they have unsaved work.</p>
+<p>Suggested MVP navigation: 1. Dashboard 2. Appointments 3. Queue 4.
+Patients 5. Encounters 6. Prescriptions 7. Lab Orders (when enabled) 8.
+Billing 9. Reports 10. Settings</p>
+<p>Hospital modules such as Admissions, Beds, Wards, Nursing, Theatre,
+and Emergency should appear only when enabled for the organization and
+permitted for the current user.</p>
+<h2 id="dashboard-design">17.6 Dashboard Design</h2>
+<p>The dashboard should answer: <strong>What needs my attention
+now?</strong></p>
+<p>Reception dashboard: - Today’s appointment count. - Checked-in and
+waiting patients. - Next available appointment slots. - Walk-in
+registration action. - Recent check-ins and cancellations. - Operational
+alerts, such as scheduling conflicts.</p>
+<p>Doctor dashboard: - Today’s schedule. - Waiting patients and current
+queue. - Quick access to the next patient. - Follow-ups and unsigned
+notes. - Pending results requiring review, subject to the doctor’s
+permissions. - Relevant clinical alerts.</p>
+<p>Owner / administrator dashboard: - Appointment volume and no-show
+rate. - Daily collections and outstanding balances. - Practitioner
+utilization. - Branch comparison, where applicable. - Operational
+exceptions requiring attention.</p>
+<p>Dashboard guidelines: - Keep the number of summary cards limited to
+the most actionable metrics. - Make each metric link to the filtered
+detail view. - Show the reporting period and facility scope. - Avoid
+displaying sensitive patient details on shared screens unless required.
+- Provide useful empty states instead of empty charts or placeholder
+data. - Do not present mock data as real production data.</p>
+<h2 id="patient-search-and-patient-profile">17.7 Patient Search and
+Patient Profile</h2>
+<p>Patient search: - Prominent search field with clear supported search
+criteria. - Display enough identifying information to distinguish
+similar names without exposing unnecessary sensitive details. - Show a
+clear “possible duplicate” warning when applicable. - Offer a deliberate
+“Create new patient” action when no matching record is found. - Do not
+create duplicate profiles silently.</p>
+<p>Patient profile layout: - <strong>Identity header:</strong> Patient
+name, patient identifier, age/date of birth, contact details, and
+relevant identity context. - <strong>Prominent clinical alerts:</strong>
+Allergies and other high-priority safety information, with details
+available on demand. - <strong>Overview:</strong> Current conditions,
+current medications, and recent encounter summary. - <strong>History
+timeline:</strong> Visits, diagnoses, prescriptions, procedures, and
+results in chronological order. - <strong>Dedicated sections or
+tabs:</strong> Overview, Medical History, Encounters, Medications,
+Allergies, Results, Documents, and Billing, governed by permissions. -
+<strong>Quick actions:</strong> Start encounter, book appointment, add
+history, and view documents, according to role.</p>
+<p>Medical history requirements: - Distinguish patient-reported history
+from clinician-confirmed information. - Record source, author, date, and
+relevant verification status. - Track onset date, resolution date, and
+status for conditions when known. - Track allergy substance, reaction,
+severity, status, and source when available. - Preserve historical
+values rather than silently replacing clinically relevant information. -
+Allow authorized clinicians to flag information as reviewed. - Clearly
+show when a section has not been assessed versus when a patient has no
+known history. - Make history available during new encounters without
+requiring staff to navigate away from the consultation workspace.</p>
+<h2 id="appointment-calendar-and-queue">17.8 Appointment Calendar and
+Queue</h2>
+<p>Calendar: - Provide day and week views, with a clear way to change
+practitioner, service, and facility filters. - Use consistent
+appointment blocks showing time, patient identifier/name as permitted,
+service, and status. - Use labels and icons in addition to color for
+appointment status. - Make available, booked, blocked, and unavailable
+time slots visually distinct. - Support keyboard navigation and clear
+conflict messages. - Use confirmation for destructive actions such as
+cancellation.</p>
+<p>Queue: - Prioritize readable rows over decorative cards. - Show queue
+number, waiting duration, appointment type, and status. - Provide
+explicit actions such as Check in, Call patient, Start encounter, and
+Mark no-show. - Use a clear indication for long waits and configured
+priority cases without implying clinical triage unless a validated
+triage workflow exists. - Record status transitions and the staff member
+who performed them. - Avoid exposing full patient names on public
+waiting-room displays unless the clinic explicitly configures an
+appropriate privacy policy.</p>
+<h2 id="consultation-workspace">17.9 Consultation Workspace</h2>
+<p>The consultation workspace is a high-frequency, high-importance
+screen. Optimize it for fast, accurate documentation.</p>
+<p>Recommended layout: - <strong>Patient banner:</strong> Name,
+identifier, age/date of birth, allergies, and current encounter status.
+- <strong>History panel:</strong> Relevant conditions, medications,
+allergies, and previous visits. - <strong>Main documentation
+area:</strong> Presenting complaint, history, examination, vitals,
+diagnosis, assessment, and plan. - <strong>Orders area:</strong>
+Prescriptions, lab tests, imaging, and referrals. - <strong>Persistent
+action area:</strong> Save draft, Sign and finalize, and other permitted
+actions.</p>
+<p>Interaction requirements: - Autosave drafts where technically safe,
+with visible save state and recovery behavior. - Show unsaved changes
+and prevent accidental navigation loss. - Validate required fields
+before signing. - Clearly distinguish Draft, Signed, and Closed states.
+- Require deliberate confirmation for signing or finalizing where
+appropriate. - After signing, preserve the original record and use an
+auditable amendment flow. - Keep warnings concise and actionable. - Do
+not make clinical recommendations or diagnoses automatically without
+appropriate clinical validation and human review.</p>
+<h2 id="forms-tables-and-data-entry">17.10 Forms, Tables, and Data
+Entry</h2>
+<p>Forms: - Use visible labels rather than relying only on placeholders.
+- Group fields by clinical or administrative purpose. - Mark required
+fields consistently and explain validation errors beside the field. -
+Preserve valid user-entered data when a validation error occurs. - Use
+suitable input types for dates, phone numbers, measurements, and
+currency. - Provide units for clinical measurements. - Support
+keyboard-only operation and logical focus order. - Avoid unnecessarily
+long forms; use sections or progressive disclosure for complex
+workflows.</p>
+<p>Tables: - Use readable row heights, aligned columns, and clear column
+headers. - Support sorting and filtering where the dataset warrants it.
+- Keep important identifiers and statuses visible. - Use pagination or
+virtualized rendering for large datasets. - Provide clear empty,
+loading, and error states. - Avoid placing too many actions in each row;
+use a primary action and a restrained overflow menu.</p>
+<h2 id="statuses-alerts-and-feedback">17.11 Statuses, Alerts, and
+Feedback</h2>
+<ul>
+<li>Use a consistent status vocabulary across screens.</li>
+<li>Pair status colors with text labels and, where useful, icons.</li>
+<li>Reserve strong red styling for errors or critical risks; do not use
+it as a decorative accent.</li>
+<li>Distinguish informational messages, warnings, blocking errors, and
+clinical safety alerts.</li>
+<li>Show loading progress for actions that take time.</li>
+<li>Confirm successful saves, bookings, payments, and
+cancellations.</li>
+<li>Explain failures and provide a recovery action where possible.</li>
+<li>Avoid transient toast-only messages for important clinical or
+financial failures; retain those errors in the relevant workflow.</li>
+<li>Do not claim a payment succeeded until the payment provider’s result
+is verified.</li>
+</ul>
+<h2 id="responsive-behavior">17.12 Responsive Behavior</h2>
+<p>Desktop: - Optimize staff workflows for typical laptop and desktop
+workstations. - Use side navigation and multi-column layouts when they
+improve task efficiency.</p>
+<p>Tablet: - Support touch-friendly queue and consultation workflows. -
+Collapse secondary panels and preserve essential patient context. -
+Ensure controls are comfortably sized for touch.</p>
+<p>Mobile: - Prioritize patient booking, appointment details,
+notifications, prescriptions, and authorized records. - Use a simplified
+navigation pattern and single-column forms. - Keep primary actions
+reachable without requiring precise gestures. - Do not simply shrink the
+desktop interface onto a phone.</p>
+<h2 id="accessibility-and-localization">17.13 Accessibility and
+Localization</h2>
+<ul>
+<li>Target WCAG 2.2 AA as the accessibility baseline.</li>
+<li>Verify text and control contrast, keyboard operation, visible focus,
+and screen-reader labels.</li>
+<li>Never communicate clinical urgency or workflow status by color
+alone.</li>
+<li>Use plain language for patient-facing copy and appropriate clinical
+terminology for staff.</li>
+<li>Support configurable locale, language, timezone, date format, and
+currency.</li>
+<li>Avoid hard-coded assumptions about one country’s identity numbers,
+address format, phone format, or tax rules.</li>
+<li>Allow for right-to-left layouts if future markets require them.</li>
+<li>Ensure date and time displays are unambiguous, particularly for
+appointments and medication instructions.</li>
+</ul>
+<h2 id="design-system-and-component-library">17.14 Design System and
+Component Library</h2>
+<p>Create reusable components before implementing every screen
+independently.</p>
+<p>Core components: - Application shell, navigation sidebar, top bar,
+page header, and breadcrumbs. - Buttons with primary, secondary,
+tertiary, and destructive variants. - Text inputs, search inputs,
+selects, multi-selects, date/time pickers, checkboxes, and radio groups.
+- Tables, pagination, filter bars, and bulk-action toolbars. - Cards,
+tabs, accordions, drawers, modals, and confirmation dialogs. - Status
+badges, alerts, inline validation, toasts, and loading skeletons. -
+Patient identity banner and clinical alert banner. - Appointment slot,
+queue row, timeline item, and encounter summary. - Prescription item,
+order summary, invoice summary, and payment status. - Empty states,
+error states, and permission-denied states.</p>
+<p>Component rules: - Define design tokens for color, typography,
+spacing, radius, shadows, and motion. - Define consistent hover, focus,
+active, disabled, loading, success, and error states. - Document
+keyboard behavior and accessibility requirements. - Use consistent
+component APIs across clinic and future hospital modules. - Keep
+clinical safety components visually distinct and carefully tested.</p>
+<h2 id="motion-and-interaction">17.15 Motion and Interaction</h2>
+<ul>
+<li>Keep transitions subtle and purposeful, typically around 120–200
+ms.</li>
+<li>Avoid animations that delay clinical or administrative tasks.</li>
+<li>Respect reduced-motion preferences.</li>
+<li>Use drawers for contextual editing when the user should retain the
+underlying page.</li>
+<li>Use dialogs for focused confirmation or short tasks, not large
+multi-step clinical forms.</li>
+<li>Warn before discarding unsaved changes.</li>
+<li>Require confirmation for destructive or clinically significant
+actions.</li>
+<li>Make asynchronous actions resilient to duplicate clicks and network
+retries.</li>
+</ul>
+<h2 id="privacy-by-design">17.16 Privacy by Design</h2>
+<ul>
+<li>Show only the minimum patient information required for the user’s
+task.</li>
+<li>Apply permissions consistently in both the UI and backend; hiding a
+button is not an authorization control.</li>
+<li>Mask sensitive identifiers when full values are unnecessary.</li>
+<li>Use secure session timeouts and re-authentication for sensitive
+operations where appropriate.</li>
+<li>Prevent sensitive data from appearing in public queue displays,
+URLs, analytics events, or application logs.</li>
+<li>Audit sensitive record access and changes.</li>
+<li>Use realistic but synthetic patient data in development and design
+prototypes.</li>
+<li>Provide clear session-expiry and access-denied states without
+exposing protected information.</li>
+</ul>
+<h2 id="ux-acceptance-criteria">17.17 UX Acceptance Criteria</h2>
+<p>A screen is ready for release when: - Its primary user task is clear
+without training-specific explanations. - The primary action is visually
+distinguishable from secondary actions. - Loading, empty, success,
+validation, error, and permission states are designed. - Keyboard and
+screen-reader behavior has been considered and tested. - Responsive
+layouts have been checked at desktop, tablet, and mobile widths as
+relevant. - Patient identifiers and clinical safety information are
+displayed appropriately. - UI permissions agree with server-side
+authorization. - Unsaved changes and irreversible actions are handled
+safely. - Clinical and financial status changes are understandable and
+traceable. - The design uses the shared design tokens and components
+rather than one-off styling.</p>
+<h2 id="suggested-design-deliverables">17.18 Suggested Design
+Deliverables</h2>
+<p>Before full implementation, prepare: 1. Sitemap and role-based
+navigation map. 2. Low-fidelity wireframes for dashboard, patient
+search, patient profile, appointment calendar, queue, consultation
+workspace, billing, and settings. 3. High-fidelity desktop designs for
+the core staff workflows. 4. Responsive patient portal/mobile designs.
+5. Design tokens and component library. 6. Interaction specifications
+for booking, check-in, consultation signing, payment, and patient
+history editing. 7. Accessibility checklist and usability test plan. 8.
+Hospital expansion design patterns for facility switching, admissions,
+wards, beds, and inpatient encounters, without building those full
+workflows in the clinic MVP.</p>
+<h1 id="multi-tenant-application-flow-and-initial-roles">18.
+Multi-Tenant Application Flow and Initial Roles</h1>
+<h2 id="tenant-model">18.1 Tenant Model</h2>
+<p>The platform is a multi-tenant SaaS application. The platform owner
+operates the SaaS product, while each clinic or hospital customer
+operates within its own isolated tenant.</p>
+<p>Recommended hierarchy:</p>
+<ul>
+<li><strong>Platform</strong>
+<ul>
+<li><strong>Tenant / Organization:</strong> A clinic business, clinic
+group, or hospital organization subscribing to the platform.
+<ul>
+<li><strong>Facility / Branch:</strong> One or more physical locations
+belonging to the tenant.
+<ul>
+<li><strong>Departments and service locations:</strong> Configurable
+organizational units, with more detailed hospital locations introduced
+later.</li>
+</ul></li>
+<li><strong>Users and role assignments:</strong> Users receive
+permissions within a tenant and, where relevant, within selected
+facilities.</li>
+</ul></li>
+</ul></li>
+</ul>
+<p>A tenant may have one clinic or many branches. In a later release,
+the same tenant model can support a hospital group with multiple
+facilities.</p>
+<h2 id="initial-roles">18.2 Initial Roles</h2>
+<p>The initial release has four <strong>staff</strong> role profiles, as
+requested. Patient portal identities are a separate future access model.
+Clinical practitioners are deliberately deferred as an additional role;
+do not enable clinician-only actions until the Practitioner role and its
+permissions are implemented. Use configurable role-permission
+assignments rather than hard-coding role names throughout the
+application.</p>
+<h3 id="super-admin-platform-owner">1. Super Admin — Platform Owner</h3>
+<p>This is the platform-level administrator, initially the product
+owner.</p>
+<p>Responsibilities: - Create, activate, suspend, and manage tenant
+organizations. - Configure tenant subscription plans and account limits
+when billing is introduced. - Invite or designate the first tenant
+administrator. - View tenant-level operational status and support
+metadata. - Manage global configuration, platform feature flags, and
+supported modules. - Investigate support issues through controlled,
+audited access. - View platform-level metrics that do not unnecessarily
+expose clinical details. - Manage platform-wide roles and permission
+templates. - Review security, audit, and platform health events.</p>
+<p>Restrictions and safeguards: - Super Admin is a <strong>platform
+role</strong>, not a normal clinic role. - Do not grant routine,
+unrestricted access to all patient records by default. - Any exceptional
+access to tenant clinical data should require a legitimate support
+reason, explicit authorization, and an audit trail. - Tenant suspension
+must not silently delete clinical records. - Super Admin actions must be
+logged separately from tenant-level actions.</p>
+<h3 id="clinic-hospital-admin-tenant-administrator">2. Clinic / Hospital
+Admin — Tenant Administrator</h3>
+<p>Responsibilities: - Manage the tenant’s organization profile and
+facilities. - Create and manage branches or facilities. - Invite users
+and assign permitted tenant roles. - Configure facility details,
+operating hours, services, prices, and schedules. - Configure
+appointment rules and notification settings. - View tenant-level
+operational and financial reports, subject to assigned permissions. -
+Manage tenant-specific settings and enabled modules. - Review tenant
+audit events where authorized.</p>
+<p>Restrictions: - Cannot create, edit, or view another tenant’s
+organization. - Cannot grant platform-level Super Admin privileges. -
+Can manage only facilities and data within the tenant’s authorized
+scope.</p>
+<h3 id="receptionist-1">3. Receptionist</h3>
+<p>Responsibilities: - Search for patients within the permitted
+tenant/facility scope. - Register patients and update permitted
+demographic fields. - Book, reschedule, and cancel appointments. -
+Register walk-ins and check patients in. - Manage waiting queues and
+appointment statuses. - View relevant appointment and patient contact
+information. - Collect or confirm administrative intake information
+where authorized.</p>
+<p>Restrictions: - No access to platform administration. - No
+unrestricted access to clinical notes, prescribing, or financial
+reports. - Access to medical history should be limited to what is
+required for the receptionist’s job and tenant policy. - Cannot change
+role assignments or tenant configuration.</p>
+<h3 id="finance">4. Finance</h3>
+<p>Responsibilities: - View and manage invoices, invoice items,
+payments, receipts, outstanding balances, and refunds according to
+permission. - Review daily collections and financial reports. -
+Configure or use approved billing codes and prices where authorized. -
+Reconcile payments and export permitted financial reports. - Review
+financial audit trails.</p>
+<p>Restrictions: - No access to detailed clinical notes unless
+explicitly justified and authorized. - Cannot alter signed clinical
+records or prescriptions. - Refunds, write-offs, discounts, and price
+changes can require additional permissions or approval thresholds. -
+Cannot manage platform tenants or grant administrative roles.</p>
+<h2 id="permission-matrix-initial-release">18.3 Permission Matrix —
+Initial Release</h2>
+<p>This matrix is a starting point. Implement permissions at action and
+resource level, then refine them with customer and compliance
+requirements.</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Capability</th>
+<th>Super Admin</th>
+<th>Clinic / Hospital Admin</th>
+<th>Receptionist</th>
+<th>Finance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Create and manage tenants</td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>View platform health and tenant status</td>
+<td>Yes</td>
+<td>Own tenant only</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>Manage tenant profile and facilities</td>
+<td>Support / platform scope</td>
+<td>Own tenant</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>Invite and manage tenant users</td>
+<td>Platform administrators</td>
+<td>Own tenant, within role limits</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>Assign Super Admin</td>
+<td>Restricted platform process</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>Register and search patients</td>
+<td>Exceptional access only, audited</td>
+<td>According to permission</td>
+<td>Yes, permitted fields</td>
+<td>Limited identifiers needed for billing</td>
+</tr>
+<tr class="odd">
+<td>View detailed clinical history</td>
+<td>Exceptional access only, audited</td>
+<td>Only if specifically authorized</td>
+<td>No by default</td>
+<td>No by default</td>
+</tr>
+<tr class="even">
+<td>Book and manage appointments</td>
+<td>Support access only when necessary</td>
+<td>Yes, if permitted</td>
+<td>Yes</td>
+<td>Read-only if needed for billing</td>
+</tr>
+<tr class="odd">
+<td>Manage consultation notes and diagnoses</td>
+<td>No routine access</td>
+<td>Only with clinical authorization</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr class="even">
+<td>Manage prescriptions and lab results</td>
+<td>No routine access</td>
+<td>Only with clinical authorization</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>Create invoices and record payments</td>
+<td>Platform billing configuration only</td>
+<td>Yes, if permitted</td>
+<td>Optional collection permission</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Refunds and financial adjustments</td>
+<td>Platform subscription/refund actions only</td>
+<td>Approval or permission based</td>
+<td>No by default</td>
+<td>Yes, subject to limits</td>
+</tr>
+<tr class="odd">
+<td>View tenant financial reports</td>
+<td>Platform-level metrics</td>
+<td>Yes, if permitted</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Manage roles and permissions</td>
+<td>Platform role templates</td>
+<td>Tenant roles within allowed boundaries</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>View audit logs</td>
+<td>Platform audit scope</td>
+<td>Own tenant, authorized events</td>
+<td>No by default</td>
+<td>Financial events as authorized</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Important:</strong> A role is a permission bundle, not proof
+that every user with that title should automatically access every item
+in the column. Enforce least privilege and permit tenant-specific
+restrictions.</p>
+<h2 id="first-time-tenant-onboarding-flow">18.4 First-Time Tenant
+Onboarding Flow</h2>
+<ol type="1">
+<li>Super Admin signs in to the platform administration portal.</li>
+<li>Super Admin creates a tenant and enters its organization
+details.</li>
+<li>System creates the tenant record, initial facility, tenant settings,
+and default role-permission templates.</li>
+<li>Super Admin invites the tenant’s first Clinic / Hospital Admin.</li>
+<li>The invited administrator verifies their identity and activates
+their account.</li>
+<li>The administrator completes setup: facility details, timezone,
+working hours, services, prices, and appointment rules.</li>
+<li>The administrator invites Receptionist and Finance users and assigns
+the appropriate roles.</li>
+<li>Users accept their invitations and authenticate.</li>
+<li>The tenant becomes operational after required setup checks
+pass.</li>
+<li>The system records onboarding actions in the audit log.</li>
+</ol>
+<p>Suggested tenant lifecycle states: - <code>Provisioning</code> -
+<code>SetupRequired</code> - <code>Active</code> -
+<code>Suspended</code> - <code>Deactivated</code></p>
+<p>Do not use tenant deactivation as a substitute for retention or
+deletion policies. Suspension should prevent normal access while
+preserving data according to contract and law.</p>
+<h2 id="login-and-routing-flow">18.5 Login and Routing Flow</h2>
+<ol type="1">
+<li>User opens the application and authenticates.</li>
+<li>System validates credentials, session state, and any required
+multi-factor authentication.</li>
+<li>System loads the user’s active platform role and tenant/facility
+assignments.</li>
+<li>If the user is a Super Admin, route to the <strong>Platform Admin
+Console</strong>.</li>
+<li>If the user belongs to a tenant, resolve the authorized tenant
+context and route to that tenant’s workspace.</li>
+<li>If the user belongs to multiple tenants or facilities, ask them to
+select an authorized context.</li>
+<li>Load navigation and actions based on server-provided
+permissions.</li>
+<li>Re-check authorization on every API request; frontend visibility is
+not a security boundary.</li>
+<li>Record relevant security events, including failed authentication and
+privileged actions.</li>
+</ol>
+<h2 id="daily-user-flows">18.6 Daily User Flows</h2>
+<h3 id="super-admin-flow">Super Admin Flow</h3>
+<p><code>Sign in → Platform dashboard → Create/manage tenant → Invite tenant administrator → Monitor tenant status and platform health → Handle audited support tasks</code></p>
+<p>The Super Admin console should focus on SaaS operations, tenant
+lifecycle, platform configuration, subscriptions when supported, and
+support auditing—not daily clinic operations.</p>
+<h3 id="clinic-hospital-admin-flow">Clinic / Hospital Admin Flow</h3>
+<p><code>Sign in → Select tenant/facility → Review dashboard → Configure services and schedules → Manage users and permissions → Monitor appointments and financial/operational reports</code></p>
+<h3 id="receptionist-flow">Receptionist Flow</h3>
+<p><code>Sign in → Open today's schedule and queue → Search or register patient → Book appointment or register walk-in → Check in patient → Update queue → Complete administrative check-out steps</code></p>
+<h3 id="finance-flow">Finance Flow</h3>
+<p><code>Sign in → Open billing workspace → Find invoice or patient account using permitted identifiers → Review charges → Record or reconcile payment → Issue receipt → Process authorized refund/adjustment → Review daily collections</code></p>
+<h2 id="tenant-isolation-and-authorization-design">18.7 Tenant Isolation
+and Authorization Design</h2>
+<p>Tenant isolation is a core security requirement, not just a UI
+feature.</p>
+<ul>
+<li>Associate every tenant-owned record with a tenant identifier.</li>
+<li>For facility-specific records, also store a facility identifier
+where applicable.</li>
+<li>Resolve tenant context from the authenticated identity and
+authorized membership; never trust a client-supplied tenant ID
+alone.</li>
+<li>Validate access in backend services for every read, write, export,
+attachment download, and background job.</li>
+<li>Use database constraints and indexes that include tenant context
+where appropriate.</li>
+<li>Consider PostgreSQL Row-Level Security as an additional
+defense-in-depth control, with careful connection-pool context handling
+and tests.</li>
+<li>Use tenant-scoped cache keys, search indexes, object-storage paths,
+and background job payloads.</li>
+<li>Ensure scheduled jobs and event consumers carry and validate tenant
+context.</li>
+<li>Include tenant-isolation tests for guessed IDs, modified requests,
+exports, and cross-tenant search.</li>
+<li>Audit privileged cross-tenant support access.</li>
+<li>Do not rely on hiding menu items or buttons to enforce
+authorization.</li>
+</ul>
+<h2 id="suggested-identity-and-access-data-model">18.8 Suggested
+Identity and Access Data Model</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Entity</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>User</td>
+<td>Global login identity and authentication metadata</td>
+</tr>
+<tr class="even">
+<td>Organization / Tenant</td>
+<td>Customer organization and data boundary</td>
+</tr>
+<tr class="odd">
+<td>Facility</td>
+<td>Clinic branch or hospital facility</td>
+</tr>
+<tr class="even">
+<td>Membership</td>
+<td>Associates a user with a tenant and account status</td>
+</tr>
+<tr class="odd">
+<td>FacilityMembership</td>
+<td>Optional restriction to one or more facilities</td>
+</tr>
+<tr class="even">
+<td>Role</td>
+<td>Named permission bundle such as Tenant Admin, Receptionist, or
+Finance</td>
+</tr>
+<tr class="odd">
+<td>Permission</td>
+<td>Specific action on a resource, such as
+<code>patient.read_demographics</code> or
+<code>invoice.refund</code></td>
+</tr>
+<tr class="even">
+<td>RolePermission</td>
+<td>Permissions granted by a role</td>
+</tr>
+<tr class="odd">
+<td>MembershipRole</td>
+<td>Role assignment within a tenant membership</td>
+</tr>
+<tr class="even">
+<td>Invitation</td>
+<td>Secure onboarding invitation with expiry and status</td>
+</tr>
+<tr class="odd">
+<td>Session / IdentityAudit</td>
+<td>Session management and security events</td>
+</tr>
+<tr class="even">
+<td>AuditLog</td>
+<td>Traceable platform and tenant actions</td>
+</tr>
+</tbody>
+</table>
+<p>Recommended identity rules: - A person may have one login identity
+and memberships in multiple tenants. - Role assignments should be scoped
+to a tenant membership, not applied globally by role name. - Super Admin
+status should be a separate platform-level assignment, not a tenant
+role. - Never grant a user a role simply because they know or submit a
+tenant identifier. - Invitation tokens should be single-use, expiring,
+and stored securely. - Disabling a membership should revoke or
+invalidate its active tenant access promptly.</p>
+<h2 id="recommended-route-structure">18.9 Recommended Route
+Structure</h2>
+<p>Example frontend routes:</p>
+<ul>
+<li><code>/platform/login</code></li>
+<li><code>/platform/dashboard</code></li>
+<li><code>/platform/tenants</code></li>
+<li><code>/platform/tenants/:tenantId</code></li>
+<li><code>/app/:tenantSlug/dashboard</code></li>
+<li><code>/app/:tenantSlug/appointments</code></li>
+<li><code>/app/:tenantSlug/queue</code></li>
+<li><code>/app/:tenantSlug/patients</code></li>
+<li><code>/app/:tenantSlug/patients/:patientId</code></li>
+<li><code>/app/:tenantSlug/encounters</code></li>
+<li><code>/app/:tenantSlug/billing</code></li>
+<li><code>/app/:tenantSlug/reports</code></li>
+<li><code>/app/:tenantSlug/settings/users</code></li>
+<li><code>/app/:tenantSlug/settings/facilities</code></li>
+</ul>
+<p>These are illustrative frontend paths, not security controls. The
+backend must resolve and validate the tenant and resource access
+independently. Avoid putting sensitive patient data in URL query
+strings.</p>
+<h2 id="multi-tenant-application-flow-diagram">18.10 Multi-Tenant
+Application Flow Diagram</h2>
+<pre class="mermaid"><code>flowchart TD
+    A[Open application] --&gt; B[Authenticate user]
+    B --&gt; C{Valid identity and session?}
+    C -- No --&gt; D[Show sign-in error]
+    C -- Yes --&gt; E{Platform Super Admin?}
+    E -- Yes --&gt; F[Platform Admin Console]
+    F --&gt; G[Create or manage tenant]
+    G --&gt; H[Invite tenant administrator]
+    H --&gt; I[Audit platform action]
+    E -- No --&gt; J[Load tenant memberships]
+    J --&gt; K{Authorized tenant context?}
+    K -- No --&gt; L[Show access denied or context selection]
+    K -- Yes --&gt; M[Load tenant workspace and permissions]
+    M --&gt; N{User role}
+    N -- Tenant Admin --&gt; O[Manage facility, users, services, settings]
+    N -- Receptionist --&gt; P[Patients, appointments, queue]
+    N -- Finance --&gt; Q[Invoices, payments, refunds, reports]
+    O --&gt; R[Authorize every API request]
+    P --&gt; R
+    Q --&gt; R
+    R --&gt; S[Apply tenant and facility scope]
+    S --&gt; T[Read or update authorized records]
+    T --&gt; U[Audit relevant actions]</code></pre>
+<h2 id="multi-tenant-acceptance-criteria">18.11 Multi-Tenant Acceptance
+Criteria</h2>
+<ul>
+<li>Super Admin can create a tenant and invite its first
+administrator.</li>
+<li>A tenant administrator can configure only their own tenant and
+authorized facilities.</li>
+<li>Receptionist users cannot access platform administration or
+unauthorized clinical/financial records.</li>
+<li>Finance users cannot modify signed clinical notes or
+prescriptions.</li>
+<li>A user with membership in multiple tenants must operate in an
+explicitly authorized tenant context.</li>
+<li>Changing a tenant ID in a URL or API payload never grants access to
+another tenant.</li>
+<li>Background jobs, exports, attachments, and search results remain
+tenant-scoped.</li>
+<li>Privileged platform actions and sensitive data access are
+auditable.</li>
+<li>Suspended tenants cannot use normal tenant workflows, while records
+remain subject to retention and contractual rules.</li>
+<li>New roles and hospital-specific permissions can be added through
+configuration without rewriting the authorization system.</li>
+</ul>
+<h1 id="updated-initial-release-scope">19. Updated Initial Release
+Scope</h1>
+<p>The initial release has four primary <strong>staff</strong>
+roles:</p>
+<ol type="1">
+<li><strong>Super Admin:</strong> Platform and tenant lifecycle
+administration.</li>
+<li><strong>Clinic / Hospital Admin:</strong> Tenant and facility setup,
+users, permissions, services, and authorized reports.</li>
+<li><strong>Receptionist:</strong> Patient registration,
+patient-reported history, appointments, check-in, and queue
+management.</li>
+<li><strong>Finance:</strong> Invoices, payments, refunds,
+reconciliation, and financial reporting.</li>
+</ol>
+<p>The first release is therefore an <strong>administrative clinic
+MVP</strong>. It can store clearly attributed patient-reported history
+and documents, but clinician-authored or signed clinical records,
+diagnoses, prescriptions, and clinical orders require the Doctor /
+Practitioner role. Add that role before enabling those clinical features
+in production. Patient portal logins are also deferred until a separate
+patient identity and authorization model is implemented.</p>
+<p>Keep the permission model extensible so future roles—doctor, nurse,
+pharmacist, lab technician, admissions staff, ward manager, and
+others—can be introduced without changing the fundamental tenant
+architecture.</p>
+<p>Recommended sequence: 1. Identity, tenant, facility, membership,
+role, permission, invitation, and audit foundations. 2. Patient
+registry, patient-reported history, appointment, and queue workflows. 3.
+Billing and finance workflows. 4. Tenant onboarding, support operations,
+monitoring, and reports. 5. Add clinician role and clinical record
+workflows as a gated release. 6. Add patient portal, diagnostics,
+pharmacy, and hospital modules in later phases.</p>
+<h1 id="review-findings-and-improvements">20. Review Findings and
+Improvements</h1>
+<p>This section records gaps found during review and decisions made so
+the specification remains internally consistent as an implementation
+reference.</p>
+<h2 id="scope-and-role-consistency">20.1 Scope and Role Consistency</h2>
+<p><strong>Finding:</strong> Earlier sections described consultation
+signing, prescriptions, doctor workflows, and patient portal login as
+MVP features, while the initial role model intentionally contains only
+Super Admin, Clinic / Hospital Admin, Receptionist, and Finance.</p>
+<p><strong>Decision:</strong> Phase 1A is an administrative clinic MVP
+with those four staff roles. It supports patient registration, clearly
+attributed patient-reported history, appointments, check-in/queues,
+billing, finance, tenant onboarding, and operational reporting. Clinical
+signing, clinician-authored diagnoses, prescriptions, and clinical
+orders are gated until a Doctor / Practitioner role is implemented. The
+patient portal is also a later release with its own identity and consent
+model. This prevents non-clinical staff from being implicitly granted
+clinical authority.</p>
+<h2 id="medical-history-provenance-and-data-quality">20.2 Medical
+History Provenance and Data Quality</h2>
+<p>Patient history should not be stored as one unstructured text blob
+only. Use structured entries where appropriate and allow
+notes/attachments as supporting content. Each meaningful entry should
+capture: - Source: patient-reported, representative-reported, imported,
+or clinician-recorded. - Author or importing system and recorded
+timestamp. - Review/verification state and reviewing practitioner, when
+applicable. - Effective/onset date and resolved date when meaningful. -
+Status such as active, resolved, historical, or entered in error where
+applicable. - A traceable amendment history for changes to clinically
+meaningful content.</p>
+<p>The UI must distinguish “not assessed”, “unknown”, “patient reports
+none”, and “clinician-confirmed none”. Do not display missing history as
+“no known allergies” or “no medical history”. High-priority allergy
+information should be visible in the appropriate clinical workflow, and
+corrections should preserve the prior value and audit history.</p>
+<h2 id="identity-and-tenant-boundary">20.3 Identity and Tenant
+Boundary</h2>
+<ul>
+<li>Tenant data is isolated by default. Patient records must not be
+globally searchable across unrelated tenants.</li>
+<li>A tenant may share a patient record across its authorized branches;
+cross-tenant sharing requires a separate explicit legal, consent, and
+technical design rather than implicit global identity matching.</li>
+<li>A person may have a global staff login with multiple tenant
+memberships, but each membership has its own tenant-scoped roles and
+facility grants.</li>
+<li>Patient portal accounts are not staff memberships and must not
+inherit Receptionist, Finance, or Admin permissions.</li>
+<li>Every file, export, search request, background job, report, and
+cache entry must carry the appropriate tenant/facility scope.</li>
+</ul>
+<h2 id="financial-controls">20.4 Financial Controls</h2>
+<ul>
+<li>Invoices, payments, payment allocations, and refunds are separate
+records linked by stable identifiers.</li>
+<li>Reconcile external payment provider outcomes before retrying an
+uncertain payment.</li>
+<li>Use idempotency keys for create-payment requests and provider
+callbacks.</li>
+<li>Store amount and currency explicitly; do not assume one currency in
+the data model even if the first market uses one currency.</li>
+<li>Record who approved discounts, write-offs, and refunds. Consider
+configurable approval limits and separation of duties before supporting
+larger clinic groups.</li>
+<li>Never edit a settled payment in place to represent a refund; create
+a linked refund/adjustment record and retain the audit trail.</li>
+</ul>
+<h2 id="clinical-and-administrative-lifecycles">20.5 Clinical and
+Administrative Lifecycles</h2>
+<p>Keep the following states separate: - Appointment: booking and
+attendance state. - Encounter: care episode lifecycle. - Clinical note:
+draft, signed, amended, or entered-in-error lifecycle. - Order:
+requested, accepted, in progress, completed, cancelled, or other
+domain-specific state. - Invoice: issued, partially paid, paid, void, or
+written off subject to accounting policy. - Payment: pending,
+processing, succeeded, failed, reversed, or otherwise reconciled with
+the provider. - Refund: requested, approved, processing, succeeded, or
+failed.</p>
+<p>Do not overload a generic “visit status” to represent the clinical
+note and financial payment outcomes. Terminal-state changes and
+reversals must be explicit and auditable.</p>
+<h2 id="saas-operations-missing-from-the-first-draft">20.6 SaaS
+Operations Missing from the First Draft</h2>
+<p>The Super Admin console should include or explicitly defer these
+platform operations: - Tenant provisioning, activation, suspension,
+reactivation, and offboarding. - Tenant plan/limits and subscription
+billing (can be deferred from initial launch). - Product feature flags
+and module enablement by tenant. - Invitation and tenant-admin recovery
+workflows. - Support-case metadata, support access reason, and audited
+time-bounded access where exceptional access is ever approved. - Tenant
+export and offboarding procedures. - Platform-wide availability, job
+health, security events, and integration health without exposing
+unnecessary clinical details.</p>
+<h2 id="delivery-gates-and-definition-of-done">20.7 Delivery Gates and
+Definition of Done</h2>
+<p>Before the first external tenant is activated: - Automated
+cross-tenant and cross-facility authorization tests pass. - Invitation,
+password reset, session revocation, and staff-offboarding flows are
+tested. - Backups and restore procedures are tested, not only
+configured. - Tenant setup can be completed without a developer manually
+editing production data. - Audit events exist for tenant
+creation/suspension, role changes, patient record access where required,
+financial adjustments, and privileged support access. - Logging and
+monitoring are configured without leaking patient data. - Product terms,
+privacy notices, data-processing responsibilities, and retention rules
+receive appropriate legal review for the launch market.</p>
+<p>Before any clinician uses the product for live care: - A Doctor /
+Practitioner role with individual accountable identity exists. -
+Clinical record authorship and signing permissions are enforced
+server-side. - Signed-note amendment, allergy provenance, medication
+safety workflow, result review, and audit history are tested with
+clinical stakeholders. - Required local clinical, privacy, prescription,
+retention, and data-transfer rules have been reviewed.</p>
+<p>Before patient portal launch: - Patient identity verification,
+account recovery, dependent/caregiver access, consent, notification
+preferences, and record disclosure permissions are tested.</p>
+<h2 id="decisions-deliberately-left-configurable">20.8 Decisions
+Deliberately Left Configurable</h2>
+<p>Do not hard-code these decisions before customer and market
+validation: - National identifiers and patient-number formats. - Tax,
+invoice numbering, currency, and payment methods. - Local language,
+date/time, timezone, and address formats. - Clinical terminologies and
+diagnosis coding systems. - Prescription catalogues and drug-interaction
+data providers. - Data-retention periods, patient record
+access/correction process, and consent rules. - Subscription plans,
+tenant quotas, branch limits, and trial rules. - Availability targets
+and RPO/RTO commitments.</p>
+<h1 id="consolidated-application-flow">21. Consolidated Application
+Flow</h1>
+<h2 id="platform-and-tenant-onboarding">21.1 Platform and Tenant
+Onboarding</h2>
+<pre class="mermaid"><code>flowchart TD
+    A[Super Admin signs in] --&gt; B[Create tenant organization]
+    B --&gt; C[Create initial facility and tenant settings]
+    C --&gt; D[Invite tenant administrator]
+    D --&gt; E[Admin verifies account and signs in]
+    E --&gt; F[Configure facility, hours, services, prices]
+    F --&gt; G[Invite Receptionist and Finance users]
+    G --&gt; H[Assign tenant-scoped roles and facility access]
+    H --&gt; I[Run setup checks]
+    I --&gt; J{Required setup complete?}
+    J -- No --&gt; F
+    J -- Yes --&gt; K[Activate tenant]
+    K --&gt; L[Audit onboarding and show tenant workspace]</code></pre>
+<h2 id="daily-administrative-workflow-initial-release">21.2 Daily
+Administrative Workflow (Initial Release)</h2>
+<pre class="mermaid"><code>flowchart TD
+    A[Staff signs in] --&gt; B[Resolve tenant and facility membership]
+    B --&gt; C{Authorized membership active?}
+    C -- No --&gt; D[Access denied and security event logged]
+    C -- Yes --&gt; E[Load role-specific workspace]
+    E --&gt; F{Role}
+    F -- Clinic / Hospital Admin --&gt; G[Configure facility, users, schedules, services]
+    F -- Receptionist --&gt; H[Search/register patient and capture attributed history]
+    H --&gt; I[Book appointment or register walk-in]
+    I --&gt; J[Check in and manage queue]
+    F -- Finance --&gt; K[Review invoice and payment records]
+    J --&gt; L[Create or review invoice as permitted]
+    K --&gt; M[Record/reconcile payment or authorized refund]
+    L --&gt; M
+    G --&gt; N[Audit relevant changes]
+    M --&gt; N
+    N --&gt; O[Return to role dashboard]</code></pre>
+<h2 id="clinical-workflow-enabled-only-after-clinician-role-exists">21.3
+Clinical Workflow (Enabled Only After Clinician Role Exists)</h2>
+<pre class="mermaid"><code>flowchart TD
+    A[Patient checked in] --&gt; B[Create or open encounter]
+    B --&gt; C[Clinician verifies patient and reviews history]
+    C --&gt; D[Record observations and clinical note]
+    D --&gt; E[Record assessment and diagnosis]
+    E --&gt; F{Orders needed?}
+    F -- No --&gt; I[Clinician signs note and plan]
+    F -- Yes --&gt; G[Create prescription, lab, imaging, or referral order]
+    G --&gt; H[Track order and results/review as applicable]
+    H --&gt; I
+    I --&gt; J[Generate relevant billable items]
+    J --&gt; K[Billing/payment workflow proceeds independently]
+    K --&gt; L[Schedule follow-up and track open tasks]</code></pre>
+<h2 id="review-checklist-for-future-changes">21.4 Review Checklist for
+Future Changes</h2>
+<p>When adding a feature or role, verify: - Which tenant and facility
+own the data? - Which role/permission can read, create, update, sign,
+export, or delete it? - Does it contain patient-sensitive or financial
+information? - What is the lifecycle/status model and who may change
+each state? - Does the action need audit history, approval, idempotency,
+or a recovery path? - What happens on duplicate requests, network
+failure, or partial completion? - Does the change introduce hospital
+assumptions into the clinic model unnecessarily? - Are the UX states,
+accessibility, and responsive behavior defined?</p>
+</body>
+</html>
