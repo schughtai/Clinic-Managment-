@@ -65,7 +65,8 @@ export async function api<T>(method: Method, path: string, body?: unknown, optio
     error?.details,
     error?.requestId,
   );
-  if (response.status === 401 && !path.startsWith('/auth/login')) {
+  // Signing in and checking who is signed in are expected to answer 401 for a visitor.
+  if (response.status === 401 && !path.startsWith('/auth/login') && path !== '/auth/me') {
     window.dispatchEvent(new CustomEvent(SESSION_ENDED_EVENT));
   }
   if (apiError.code === 'organization_suspended') {

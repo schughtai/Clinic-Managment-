@@ -414,11 +414,11 @@ create function auth_is_platform_admin(p_person uuid) returns boolean
 create function my_memberships()
   returns table (
     membership_id uuid, organization_id uuid, org_slug text, org_name text, org_status org_status,
-    facility_scope text, role_names text[], facilities jsonb
+    default_language text, facility_scope text, role_names text[], facilities jsonb
   )
   language sql stable security definer set search_path = pg_catalog, public
   as $$
-    select m.id, o.id, o.slug, o.name, o.status, m.facility_scope,
+    select m.id, o.id, o.slug, o.name, o.status, o.default_language, m.facility_scope,
       coalesce((select array_agg(r.name order by r.name) from membership_roles mr join roles r on r.id = mr.role_id
                 where mr.membership_id = m.id and (r.requires_module is null or r.requires_module = any (o.modules))), '{}'),
       coalesce((select jsonb_agg(jsonb_build_object('id', f.id, 'name', f.name) order by f.name)

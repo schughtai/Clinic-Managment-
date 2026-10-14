@@ -92,20 +92,20 @@ admin → accept in another browser → admin lands in the organization workspac
 
 ### Tests for User Story 1
 
-- [ ] T033 [P] [US1] `apps/api/test/mfa.test.ts`: first Super Admin sign-in returns `mfa_enroll`; enrol/confirm returns 10 recovery codes; platform routes refuse `password`-level sessions with `mfa_required`; wrong code → `mfa_invalid`; reused code step refused; recovery code works once
-- [ ] T034 [P] [US1] `apps/api/test/platform.test.ts`: create organization (status `setup_required`, one facility, four roles, PKR/en/Asia/Karachi defaults, platform audit entry); duplicate or reserved slug → `slug_taken`/validation error; non-admin and non-MFA callers get 403
-- [ ] T035 [P] [US1] `apps/api/test/invitations.test.ts`: first-admin invitation returns link with fragment token and `whatsappUrl`, expires in 72 h; lookup reveals only org and invitee names; acceptance creates person + membership with `tenant_admin`; second acceptance and concurrent double acceptance yield exactly one membership; expired/revoked → `invitation_invalid`; existing person must be signed in as that person to accept
+- [X] T033 [P] [US1] `apps/api/test/mfa.test.ts`: first Super Admin sign-in returns `mfa_enroll`; enrol/confirm returns 10 recovery codes; platform routes refuse `password`-level sessions with `mfa_required`; wrong code → `mfa_invalid`; reused code step refused; recovery code works once
+- [X] T034 [P] [US1] `apps/api/test/platform.test.ts`: create organization (status `setup_required`, one facility, four roles, PKR/en/Asia/Karachi defaults, platform audit entry); duplicate or reserved slug → `slug_taken`/validation error; non-admin and non-MFA callers get 403
+- [X] T035 [P] [US1] `apps/api/test/invitations.test.ts`: first-admin invitation returns link with fragment token and `whatsappUrl`, expires in 72 h; lookup reveals only org and invitee names; acceptance creates person + membership with `tenant_admin`; second acceptance and concurrent double acceptance yield exactly one membership; expired/revoked → `invitation_invalid`; existing person must be signed in as that person to accept
 
 ### Implementation for User Story 1
 
-- [ ] T036 [US1] Implement `apps/api/src/cli/create-platform-admin.ts` (args `--name`, `--email`|`--phone`, `--promote`; hidden password prompt; uses admin URL) and npm script `platform:create-admin` in `apps/api/package.json`; also accept `--password-env NAME` for non-interactive use on a host
-- [ ] T037 [US1] Implement `apps/api/src/cli/reset-platform-mfa.ts` (npm script `platform:reset-mfa`) that clears a Super Admin's MFA enrolment and recovery codes with a platform audit entry, documented in `docs/v2/operations.md`
-- [ ] T038 [US1] Implement `apps/api/src/modules/identity/auth.service.ts` + `auth.controller.ts`: `POST /auth/login` (identifier = phone or email; lockout 5 failures/15 min; returns `next`), `POST /auth/mfa/enroll/start`, `POST /auth/mfa/enroll/confirm`, `POST /auth/mfa/verify`, `POST /auth/logout`, `GET /auth/me`; security events to audit
-- [ ] T039 [US1] Implement `apps/api/src/modules/platform/organizations.service.ts` + `platform.controller.ts`: `GET/POST /platform/organizations`, `GET /platform/organizations/:id` (no patient data), using `platform_create_organization`
-- [ ] T040 [US1] Implement `apps/api/src/modules/staff/invitations.service.ts`: create (hash only stored; link `/invite#<token>`; `https://wa.me/<phone?>?text=` message), lookup, accept (new person with password ≥ 10 chars, or existing signed-in person), and controllers `POST /platform/organizations/:id/invitations`, `POST /invitations/lookup`, `POST /invitations/accept` with strict rate limit
-- [ ] T041 [P] [US1] Web: `apps/web/src/pages/auth/LoginPage.tsx`, `MfaEnrollPage.tsx` (QR via `qrcode`, base32 text, confirm, recovery codes shown once with copy/print), `MfaVerifyPage.tsx` (code or recovery code)
-- [ ] T042 [P] [US1] Web: `apps/web/src/shell/PlatformShell.tsx`, `apps/web/src/pages/platform/OrganizationsPage.tsx` (list, search, status badges, empty state) and `CreateOrganizationDrawer.tsx` (name, slug auto-suggest, locale defaults, first facility)
-- [ ] T043 [US1] Web: `apps/web/src/pages/platform/OrganizationDetailPage.tsx` with "Invite administrator" dialog showing the one-time link with copy and WhatsApp buttons; `apps/web/src/pages/auth/InvitePage.tsx` reading the token from `location.hash`, showing org/invitee, password form or "sign in to accept"
+- [X] T036 [US1] Implement `apps/api/src/cli/create-platform-admin.ts` (args `--name`, `--email`|`--phone`, `--promote`; hidden password prompt; uses admin URL) and npm script `platform:create-admin` in `apps/api/package.json`; also accept `--password-env NAME` for non-interactive use on a host
+- [X] T037 [US1] Implement `apps/api/src/cli/reset-platform-mfa.ts` (npm script `platform:reset-mfa`) that clears a Super Admin's MFA enrolment and recovery codes with a platform audit entry, documented in `docs/v2/operations.md`
+- [X] T038 [US1] Implement `apps/api/src/modules/identity/auth.service.ts` + `auth.controller.ts`: `POST /auth/login` (identifier = phone or email; lockout 5 failures/15 min; returns `next`), `POST /auth/mfa/enroll/start`, `POST /auth/mfa/enroll/confirm`, `POST /auth/mfa/verify`, `POST /auth/logout`, `GET /auth/me`; security events to audit
+- [X] T039 [US1] Implement `apps/api/src/modules/platform/organizations.service.ts` + `platform.controller.ts`: `GET/POST /platform/organizations`, `GET /platform/organizations/:id` (no patient data), using `platform_create_organization`
+- [X] T040 [US1] Implement `apps/api/src/modules/staff/invitations.service.ts`: create (hash only stored; link `/invite#<token>`; `https://wa.me/<phone?>?text=` message), lookup, accept (new person with password ≥ 10 chars, or existing signed-in person), and controllers `POST /platform/organizations/:id/invitations`, `POST /invitations/lookup`, `POST /invitations/accept` with strict rate limit
+- [X] T041 [P] [US1] Web: `apps/web/src/pages/auth/LoginPage.tsx`, `MfaEnrollPage.tsx` (QR via `qrcode`, base32 text, confirm, recovery codes shown once with copy/print), `MfaVerifyPage.tsx` (code or recovery code)
+- [X] T042 [P] [US1] Web: `apps/web/src/shell/PlatformShell.tsx`, `apps/web/src/pages/platform/OrganizationsPage.tsx` (list, search, status badges, empty state) and `CreateOrganizationDrawer.tsx` (name, slug auto-suggest, locale defaults, first facility)
+- [X] T043 [US1] Web: `apps/web/src/pages/platform/OrganizationDetailPage.tsx` with "Invite administrator" dialog showing the one-time link with copy and WhatsApp buttons; `apps/web/src/pages/auth/InvitePage.tsx` reading the token from `location.hash`, showing org/invitee, password form or "sign in to accept"
 
 **Checkpoint**: Story 1 works end to end and its tests pass.
 
@@ -120,18 +120,18 @@ sidebar, blocked pages.
 
 ### Tests for User Story 2
 
-- [ ] T044 [P] [US2] `apps/api/test/auth.test.ts`: one membership → `ready` with destination `/app/<slug>/dashboard`; two memberships → `choose_context`; `POST /auth/context` only accepts own active memberships and granted facilities; 5 failures lock for 15 min and 6th attempt refused even with right password; deactivated membership → next request 401/404; member whose last facility grant was removed signs in but gets `context_required` / no-facility state; session expires after 12 h; logout ends session
-- [ ] T045 [P] [US2] `apps/api/test/isolation.test.ts` (grows with each story): for every org route in contracts/api.md, a member of org B gets 404 for org A's slug and resources; Receptionist gets 403 on admin routes; facility-limited member never sees ungranted facility ids
-- [ ] T046 [P] [US2] `apps/web/src/shell/Sidebar.test.tsx`: sidebar items are derived from `permissions` (Receptionist sees Dashboard only; admin sees Settings, Staff, Audit); `RequirePermission` renders `AccessDenied` without fetching data
+- [X] T044 [P] [US2] `apps/api/test/auth.test.ts`: one membership → `ready` with destination `/app/<slug>/dashboard`; two memberships → `choose_context`; `POST /auth/context` only accepts own active memberships and granted facilities; 5 failures lock for 15 min and 6th attempt refused even with right password; deactivated membership → next request 401/404; member whose last facility grant was removed signs in but gets `context_required` / no-facility state; session expires after 12 h; logout ends session
+- [X] T045 [P] [US2] `apps/api/test/isolation.test.ts` (grows with each story): for every org route in contracts/api.md, a member of org B gets 404 for org A's slug and resources; Receptionist gets 403 on admin routes; facility-limited member never sees ungranted facility ids
+- [X] T046 [P] [US2] `apps/web/src/shell/Sidebar.test.tsx`: sidebar items are derived from `permissions` (Receptionist sees Dashboard only; admin sees Settings, Staff, Audit); `RequirePermission` renders `AccessDenied` without fetching data
 
 ### Implementation for User Story 2
 
-- [ ] T047 [US2] Implement `POST /auth/context` and context-aware `GET /auth/me` (memberships, facilities, permissions, modules) in `apps/api/src/modules/identity/auth.controller.ts` and `context.service.ts`
-- [ ] T048 [US2] Implement `GET /orgs/:slug/dashboard` (setup checks, counts) in `apps/api/src/modules/organizations/dashboard.controller.ts`
-- [ ] T049 [P] [US2] Web: `apps/web/src/pages/auth/ChooseContextPage.tsx` (organizations and, for Super Admins, the platform; then facility when more than one)
-- [ ] T050 [US2] Web: `apps/web/src/shell/AppShell.tsx`, `Sidebar.tsx` (permission-driven, collapsible under 1024 px, active item), `TopBar.tsx` (org name, `FacilitySelector.tsx` when >1 facility, user menu, language switch, sign-out), session-expired, suspended and "no facility access" states; `apps/web/src/pages/app/DashboardPage.tsx` (setup checklist placeholder for US3)
-- [ ] T051 [US2] Web: `apps/web/src/pages/account/AccountPage.tsx` with change password; `POST /auth/change-password` in `apps/api/src/modules/identity/auth.controller.ts` ending other sessions
-- [ ] T052 [US2] Optional MFA for any staff member: allow `/auth/mfa/enroll/*` for any signed-in person, require the code at sign-in once enrolled, add "Turn on authenticator" to `apps/web/src/pages/account/AccountPage.tsx`, tests in `apps/api/test/mfa.test.ts`
+- [X] T047 [US2] Implement `POST /auth/context` and context-aware `GET /auth/me` (memberships, facilities, permissions, modules) in `apps/api/src/modules/identity/auth.controller.ts` and `context.service.ts`
+- [X] T048 [US2] Implement `GET /orgs/:slug/dashboard` (setup checks, counts) in `apps/api/src/modules/organizations/dashboard.controller.ts`
+- [X] T049 [P] [US2] Web: `apps/web/src/pages/auth/ChooseContextPage.tsx` (organizations and, for Super Admins, the platform; then facility when more than one)
+- [X] T050 [US2] Web: `apps/web/src/shell/AppShell.tsx`, `Sidebar.tsx` (permission-driven, collapsible under 1024 px, active item), `TopBar.tsx` (org name, `FacilitySelector.tsx` when >1 facility, user menu, language switch, sign-out), session-expired, suspended and "no facility access" states; `apps/web/src/pages/app/DashboardPage.tsx` (setup checklist placeholder for US3)
+- [X] T051 [US2] Web: `apps/web/src/pages/account/AccountPage.tsx` with change password; `POST /auth/change-password` in `apps/api/src/modules/identity/auth.controller.ts` ending other sessions
+- [X] T052 [US2] Optional MFA for any staff member: allow `/auth/mfa/enroll/*` for any signed-in person, require the code at sign-in once enrolled, add "Turn on authenticator" to `apps/web/src/pages/account/AccountPage.tsx`, tests in `apps/api/test/mfa.test.ts`
 
 **Checkpoint**: Stories 1 and 2 work independently; isolation suite green for existing routes.
 

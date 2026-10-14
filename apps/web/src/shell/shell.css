@@ -1,0 +1,154 @@
+/* Application shell: sidebar, top bar and content area. Collapses to a menu button under 1024 px. */
+.shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  grid-template-rows: var(--topbar-height) 1fr;
+  grid-template-areas:
+    'side top'
+    'side main';
+  min-block-size: 100vh;
+}
+.shell-sidebar {
+  grid-area: side;
+  background: var(--surface);
+  border-inline-end: 1px solid var(--border);
+  padding: var(--s-4) var(--s-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  position: sticky;
+  inset-block-start: 0;
+  block-size: 100vh;
+  overflow-y: auto;
+}
+.shell-sidebar .brand {
+  padding: var(--s-2) var(--s-3) var(--s-4);
+}
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-2) var(--s-3);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: var(--fs-sm);
+  min-block-size: 40px;
+}
+.nav-link:hover {
+  background: var(--surface-muted);
+  color: var(--text);
+}
+.nav-link[aria-current='page'] {
+  background: var(--accent-soft);
+  color: #134e4a;
+}
+.nav-section {
+  margin-block-start: var(--s-4);
+  padding-inline: var(--s-3);
+  font-size: var(--fs-xs);
+  color: var(--text-2);
+  font-weight: 600;
+}
+.shell-topbar {
+  grid-area: top;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding-inline: var(--s-5);
+  background: var(--surface);
+  border-block-end: 1px solid var(--border);
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 10;
+}
+.shell-topbar .org-name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.shell-main {
+  grid-area: main;
+  padding: var(--s-6) var(--s-5);
+  max-inline-size: 1200px;
+  inline-size: 100%;
+}
+.menu-toggle {
+  display: none;
+}
+.shell-backdrop {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'top'
+      'main';
+  }
+  .shell-sidebar {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: min(var(--sidebar-width), 85vw);
+    z-index: 40;
+    transform: translateX(-100%);
+    transition: transform var(--motion);
+    box-shadow: var(--shadow-md);
+  }
+  [dir='rtl'] .shell-sidebar {
+    transform: translateX(100%);
+  }
+  .shell.open .shell-sidebar {
+    transform: none;
+  }
+  .shell.open .shell-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgb(15 23 42 / 0.35);
+    z-index: 30;
+  }
+  .menu-toggle {
+    display: inline-flex;
+  }
+  .shell-topbar {
+    padding-inline: var(--s-3);
+  }
+  .shell-main {
+    padding: var(--s-5) var(--s-4);
+  }
+}
+
+.user-menu {
+  position: relative;
+}
+.user-menu-panel {
+  position: absolute;
+  inset-inline-end: 0;
+  inset-block-start: calc(100% + 4px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-md);
+  min-inline-size: 220px;
+  padding: var(--s-2);
+  display: flex;
+  flex-direction: column;
+  z-index: 20;
+}
+.user-menu-panel .nav-link {
+  inline-size: 100%;
+  background: none;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+  text-align: start;
+}
+.banner {
+  padding: var(--s-2) var(--s-5);
+  font-size: var(--fs-sm);
+}
